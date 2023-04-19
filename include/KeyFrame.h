@@ -22,10 +22,11 @@
 #define KEYFRAME_H
 
 #include "MapPoint.h"
-#include "Thirdparty/DBoW2/DBoW2/BowVector.h"
-#include "Thirdparty/DBoW2/DBoW2/FeatureVector.h"
-#include "ORBVocabulary.h"
-#include "ORBextractor.h"
+#include "Thirdparty/DBoW3/src/DBoW3.h"
+
+#include "SPVocabulary.h"
+#include "SPextractor.h"
+
 #include "Frame.h"
 #include "KeyFrameDatabase.h"
 

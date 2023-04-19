@@ -27,7 +27,7 @@
 
 #include "KeyFrame.h"
 #include "Frame.h"
-#include "ORBVocabulary.h"
+#include "SPVocabulary.h"
 
 #include<mutex>
 

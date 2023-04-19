@@ -21,7 +21,7 @@
 #include "KeyFrameDatabase.h"
 
 #include "KeyFrame.h"
-#include "Thirdparty/DBoW2/DBoW2/BowVector.h"
+#include "Thirdparty/DBoW3/src/DBoW3.h"
 
 #include<mutex>
 

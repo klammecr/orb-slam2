@@ -20,7 +20,7 @@
 
 #include "LocalMapping.h"
 #include "LoopClosing.h"
-#include "ORBmatcher.h"
+#include "SPmatcher.h"
 #include "Optimizer.h"
 
 #include <unistd.h>

@@ -24,11 +24,12 @@
 #include<vector>
 
 #include "MapPoint.h"
-#include "Thirdparty/DBoW2/DBoW2/BowVector.h"
-#include "Thirdparty/DBoW2/DBoW2/FeatureVector.h"
-#include "ORBVocabulary.h"
+#include "Thirdparty/DBoW3/src/DBoW3.h"
+#include "SPVocabulary.h"
 #include "KeyFrame.h"
-#include "ORBextractor.h"
+
+#include "SPVocabulary.h"
+#include "SPextractor.h"
 
 #include <opencv2/opencv.hpp>
 

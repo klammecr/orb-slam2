@@ -24,7 +24,7 @@
 #include "KeyFrame.h"
 #include "LocalMapping.h"
 #include "Map.h"
-#include "ORBVocabulary.h"
+#include "SPVocabulary.h"
 #include "Tracking.h"
 
 #include "KeyFrameDatabase.h"

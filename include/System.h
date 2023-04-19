@@ -29,6 +29,10 @@
 #include <opencv2/opencv.hpp>
 using namespace cv;
 
+#include<string>
+#include<thread>
+#include<opencv2/core/core.hpp>
+
 #include "Tracking.h"
 #include "FrameDrawer.h"
 #include "MapDrawer.h"
@@ -36,7 +40,10 @@ using namespace cv;
 #include "LocalMapping.h"
 #include "LoopClosing.h"
 #include "KeyFrameDatabase.h"
-#include "ORBVocabulary.h"
+
+#include "SPVocabulary.h"
+
+
 #include "Viewer.h"
 
 namespace ORB_SLAM2

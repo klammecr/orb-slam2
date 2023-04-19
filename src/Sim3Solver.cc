@@ -26,9 +26,9 @@
 #include <opencv2/core/core.hpp>
 
 #include "KeyFrame.h"
-#include "ORBmatcher.h"
+#include "SPmatcher.h"
 
-#include "Thirdparty/DBoW2/DUtils/Random.h"
+#include "Random.h"
 
 namespace ORB_SLAM2
 {
