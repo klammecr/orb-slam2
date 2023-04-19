@@ -5,7 +5,7 @@ The original ORB-SLAM2 code requires OpenCV 3.2, Pangolin 0.5 and is tested with
 - Naturally, newer versions of C++ use different features
 
 This repository adds a support for OpenCV 4.5.4, Pangolin 0.6 and C++14 by making (mainly) these changes:
-- Updated the CMakeLists.txt of ORB-SLAM2 to compile with C++14, prodivde path for OpenCV 4.5.4 and fix the Pangolin errors with adding NO_MODULe for Eigen
+- Updated the CMakeLists.txt of ORB-SLAM2 to compile with C++14, pdovided path for OpenCV 4.5.4 (you need to change it) and fix the Pangolin errors with adding NO_MODULE for Eigen
 - Updated the old C-api headers in some of the ORB-SLAM header files
 - Added OpenCV headers and namespace to the ORB-SLAM header files
 - Fixed the usleep error by adding appropriate headers to the source files
