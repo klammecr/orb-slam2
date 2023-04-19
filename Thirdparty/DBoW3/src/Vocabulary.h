@@ -1,4 +1,4 @@
-l/**
+/**
  * File: Vocabulary.h
  * Date: February 2011
  * Author: Dorian Galvez-Lopez
