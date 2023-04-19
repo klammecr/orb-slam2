@@ -1,0 +1,46 @@
+Configuring and building Thirdparty/DBoW2 ...
+-- Configuring incomplete, errors occurred!
+See also "/orb-slam2/Thirdparty/DBoW3/build/CMakeFiles/CMakeOutput.log".
+Configuring and building Thirdparty/g2o ...
+-- BUILD TYPE:Release
+-- Compiling on Unix
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /orb-slam2/Thirdparty/g2o/build
+Consolidate compiler generated dependencies of target g2o
+[100%] Built target g2o
+Configuring and building ORB_SLAM2 ...
+-- Caffe2: CUDA detected: 11.8
+-- Caffe2: CUDA nvcc is: /usr/local/cuda/bin/nvcc
+-- Caffe2: CUDA toolkit directory: /usr/local/cuda
+-- Caffe2: Header version is: 11.8
+-- /usr/local/cuda/lib64/libnvrtc.so shorthash is 672ee683
+-- USE_CUDNN is set to 0. Compiling without cuDNN support
+-- Automatic GPU detection failed. Building for common architectures.
+-- Autodetected CUDA architecture(s): 3.5;5.0;8.0;8.6;8.9;9.0;8.9+PTX;9.0+PTX
+-- Added CUDA NVCC flags for: -gencode;arch=compute_35,code=sm_35;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86;-gencode;arch=compute_89,code=sm_89;-gencode;arch=compute_90,code=sm_90;-gencode;arch=compute_89,code=compute_89;-gencode;arch=compute_90,code=compute_90
+-- Using flag -std=c++14.
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /orb-slam2/build
+Consolidate compiler generated dependencies of target SuperSLAM
+[ 11%] Building CXX object CMakeFiles/SuperSLAM.dir/src/LocalMapping.cc.o
+[ 11%] Building CXX object CMakeFiles/SuperSLAM.dir/src/Tracking.cc.o
+[ 11%] Building CXX object CMakeFiles/SuperSLAM.dir/src/LoopClosing.cc.o
+[ 11%] Building CXX object CMakeFiles/SuperSLAM.dir/src/System.cc.o
+[ 14%] Building CXX object CMakeFiles/SuperSLAM.dir/src/FrameDrawer.cc.o
+[ 20%] Building CXX object CMakeFiles/SuperSLAM.dir/src/SPmatcher.cc.o
+[ 20%] Building CXX object CMakeFiles/SuperSLAM.dir/src/SuperPoint.cc.o
+[ 22%] Building CXX object CMakeFiles/SuperSLAM.dir/src/SPextractor.cc.o
+[ 28%] Building CXX object CMakeFiles/SuperSLAM.dir/src/KeyFrame.cc.o
+[ 28%] Building CXX object CMakeFiles/SuperSLAM.dir/src/MapPoint.cc.o
+[ 34%] Building CXX object CMakeFiles/SuperSLAM.dir/src/Converter.cc.o
+[ 34%] Building CXX object CMakeFiles/SuperSLAM.dir/src/Map.cc.o
+[ 40%] Building CXX object CMakeFiles/SuperSLAM.dir/src/MapDrawer.cc.o
+[ 40%] Building CXX object CMakeFiles/SuperSLAM.dir/src/Optimizer.cc.o
+[ 42%] Building CXX object CMakeFiles/SuperSLAM.dir/src/PnPsolver.cc.o
+[ 45%] Building CXX object CMakeFiles/SuperSLAM.dir/src/KeyFrameDatabase.cc.o
+[ 48%] Building CXX object CMakeFiles/SuperSLAM.dir/src/Frame.cc.o
+[ 51%] Building CXX object CMakeFiles/SuperSLAM.dir/src/Sim3Solver.cc.o
+[ 54%] Building CXX object CMakeFiles/SuperSLAM.dir/src/Initializer.cc.o
+[ 57%] Building CXX object CMakeFiles/SuperSLAM.dir/src/Viewer.cc.o

@@ -23,7 +23,6 @@
 #include<opencv2/opencv.hpp>
 #include "Frame.h"
 
-
 namespace ORB_SLAM2
 {
 
@@ -42,7 +41,6 @@ public:
     bool Initialize(const Frame &CurrentFrame, const std::vector<int> &vMatches12,
                     cv::Mat &R21, cv::Mat &t21, std::vector<cv::Point3f> &vP3D, std::vector<bool> &vbTriangulated);
 
-
 private:
 
     void FindHomography(std::vector<bool> &vbMatchesInliers, float &score, cv::Mat &H21);
@@ -56,6 +54,9 @@ private:
     float CheckFundamental(const cv::Mat &F21, std::vector<bool> &vbMatchesInliers, float sigma);
 
     bool ReconstructF(std::vector<bool> &vbMatchesInliers, cv::Mat &F21, cv::Mat &K,
+                      cv::Mat &R21, cv::Mat &t21, std::vector<cv::Point3f> &vP3D, std::vector<bool> &vbTriangulated, float minParallax, int minTriangulated);
+
+    bool ReconstructH(std::vector<bool> &vbMatchesInliers, cv::Mat &H21, cv::Mat &K,
                       cv::Mat &R21, cv::Mat &t21, std::vector<cv::Point3f> &vP3D, std::vector<bool> &vbTriangulated, float minParallax, int minTriangulated);
 
     bool ReconstructH(std::vector<bool> &vbMatchesInliers, cv::Mat &H21, cv::Mat &K,
