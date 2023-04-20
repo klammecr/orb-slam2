@@ -522,7 +522,7 @@ void SPextractor::operator()( cv::InputArray _image, cv::InputArray _mask, std::
     // Pre-compute the scale pyramid
     ComputePyramid(image);
 
-    vector < std::vector<cv::KeyPoint> > allKeypoints;
+    std::vector < std::vector<cv::KeyPoint> > allKeypoints;
     ComputeKeyPointsOctTree(allKeypoints, descriptors);
     std::cout << descriptors.rows << std::endl;
 
