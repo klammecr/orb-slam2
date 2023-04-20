@@ -446,7 +446,7 @@ void LoopClosing::CorrectLoop()
 
     {
         // Get Map std::mutex
-        std::unique_lock<std::mutex> lock(mpMap->std::mutexMapUpdate);
+        std::unique_lock<std::mutex> lock(mpMap->mMutexMapUpdate);
 
         for(std::vector<KeyFrame*>::iterator vit=mvpCurrentConnectedKFs.begin(), vend=mvpCurrentConnectedKFs.end(); vit!=vend; vit++)
         {
@@ -603,7 +603,7 @@ void LoopClosing::SearchAndFuse(const KeyFrameAndPose &CorrectedPosesMap)
         matcher.Fuse(pKF,cvScw,mvpLoopMapPoints,4,vpReplacePoints);
 
         // Get Map std::mutex
-        std::unique_lock<std::mutex> lock(mpMap->std::mutexMapUpdate);
+        std::unique_lock<std::mutex> lock(mpMap->mMutexMapUpdate);
         const int nLP = mvpLoopMapPoints.size();
         for(int i=0; i<nLP;i++)
         {
@@ -620,14 +620,14 @@ void LoopClosing::SearchAndFuse(const KeyFrameAndPose &CorrectedPosesMap)
 void LoopClosing::RequestReset()
 {
     {
-        std::unique_lock<std::mutex> lock(std::mutexReset);
+        std::unique_lock<std::mutex> lock(mMutexReset);
         mbResetRequested = true;
     }
 
     while(1)
     {
         {
-        std::unique_lock<std::mutex> lock2(std::mutexReset);
+        std::unique_lock<std::mutex> lock2(mMutexReset);
         if(!mbResetRequested)
             break;
         }
@@ -637,7 +637,7 @@ void LoopClosing::RequestReset()
 
 void LoopClosing::ResetIfRequested()
 {
-    std::unique_lock<std::mutex> lock(std::mutexReset);
+    std::unique_lock<std::mutex> lock(mMutexReset);
     if(mbResetRequested)
     {
         mlpLoopKeyFrameQueue.clear();
@@ -675,7 +675,7 @@ void LoopClosing::RunGlobalBundleAdjustment(unsigned long nLoopKF)
             }
 
             // Get Map std::mutex
-            std::unique_lock<std::mutex> lock(mpMap->std::mutexMapUpdate);
+            std::unique_lock<std::mutex> lock(mpMap->mMutexMapUpdate);
 
             // Correct keyframes starting at map first keyframe
             std::list<KeyFrame*> lpKFtoCheck(mpMap->mvpKeyFrameOrigins.begin(),mpMap->mvpKeyFrameOrigins.end());
