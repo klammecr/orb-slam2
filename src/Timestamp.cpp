@@ -92,7 +92,7 @@ double Timestamp::getFloatTime() const {
 	return double(m_secs) + double(m_usecs)/1000000.0;
 }
 
-std::string Timestamp::getstd::stringTime() const {
+std::string Timestamp::getStringTime() const {
 	char buf[32];
 	sprintf(buf, "%.6lf", this->getFloatTime());
 	return std::string(buf);
