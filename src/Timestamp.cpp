@@ -232,11 +232,11 @@ std::string Timestamp::Format(double s) {
 	ss.fill('0');
 	bool b;
 	if((b = (days > 0))) ss << days << "d ";
-	if((b = (b || hours > 0))) ss << setw(2) << hours << ":";
-	if((b = (b || minutes > 0))) ss << setw(2) << minutes << ":";
-	if(b) ss << setw(2);
+	if((b = (b || hours > 0))) ss << std::setw(2) << hours << ":";
+	if((b = (b || minutes > 0))) ss << std::setw(2) << minutes << ":";
+	if(b) ss << std::setw(2);
 	ss << seconds;
-	if(!b) ss << "." << setw(6) << ms;
+	if(!b) ss << "." << std::setw(6) << ms;
 
 	return ss.str();
 }
