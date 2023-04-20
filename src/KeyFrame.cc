@@ -140,7 +140,7 @@ void KeyFrame::UpdateBestCovisibles()
     std::unique_lock<std::mutex> lock(mMutexConnections);
     std::vector<std::pair<int,KeyFrame*> > vPairs;
     vPairs.reserve(mConnectedKeyFrameWeights.size());
-    for(map<KeyFrame*,int>::iterator mit=mConnectedKeyFrameWeights.begin(), mend=mConnectedKeyFrameWeights.end(); mit!=mend; mit++)
+    for(std::map<KeyFrame*,int>::iterator mit=mConnectedKeyFrameWeights.begin(), mend=mConnectedKeyFrameWeights.end(); mit!=mend; mit++)
        vPairs.push_back(std::make_pair(mit->second,mit->first));
 
     sort(vPairs.begin(),vPairs.end());
@@ -160,7 +160,7 @@ std::set<KeyFrame*> KeyFrame::GetConnectedKeyFrames()
 {
     std::unique_lock<std::mutex> lock(mMutexConnections);
     std::set<KeyFrame*> s;
-    for(map<KeyFrame*,int>::iterator mit=mConnectedKeyFrameWeights.begin();mit!=mConnectedKeyFrameWeights.end();mit++)
+    for(std::map<KeyFrame*,int>::iterator mit=mConnectedKeyFrameWeights.begin();mit!=mConnectedKeyFrameWeights.end();mit++)
         s.insert(mit->first);
     return s;
 }
@@ -288,7 +288,7 @@ MapPoint* KeyFrame::GetMapPoint(const size_t &idx)
 
 void KeyFrame::UpdateConnections()
 {
-    map<KeyFrame*,int> KFcounter;
+    std::map<KeyFrame*,int> KFcounter;
 
     std::vector<MapPoint*> vpMP;
 
@@ -309,9 +309,9 @@ void KeyFrame::UpdateConnections()
         if(pMP->isBad())
             continue;
 
-        map<KeyFrame*,size_t> observations = pMP->GetObservations();
+        std::map<KeyFrame*,size_t> observations = pMP->GetObservations();
 
-        for(map<KeyFrame*,size_t>::iterator mit=observations.begin(), mend=observations.end(); mit!=mend; mit++)
+        for(std::map<KeyFrame*,size_t>::iterator mit=observations.begin(), mend=observations.end(); mit!=mend; mit++)
         {
             if(mit->first->mnId==mnId)
                 continue;
@@ -331,7 +331,7 @@ void KeyFrame::UpdateConnections()
 
     std::vector<std::pair<int,KeyFrame*> > vPairs;
     vPairs.reserve(KFcounter.size());
-    for(map<KeyFrame*,int>::iterator mit=KFcounter.begin(), mend=KFcounter.end(); mit!=mend; mit++)
+    for(std::map<KeyFrame*,int>::iterator mit=KFcounter.begin(), mend=KFcounter.end(); mit!=mend; mit++)
     {
         if(mit->second>nmax)
         {
@@ -463,7 +463,7 @@ void KeyFrame::SetBadFlag()
         }
     }
 
-    for(map<KeyFrame*,int>::iterator mit = mConnectedKeyFrameWeights.begin(), mend=mConnectedKeyFrameWeights.end(); mit!=mend; mit++)
+    for(std::map<KeyFrame*,int>::iterator mit = mConnectedKeyFrameWeights.begin(), mend=mConnectedKeyFrameWeights.end(); mit!=mend; mit++)
         mit->first->EraseConnection(this);
 
     for(size_t i=0; i<mvpMapPoints.size(); i++)

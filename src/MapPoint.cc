@@ -136,7 +136,7 @@ void MapPoint::EraseObservation(KeyFrame* pKF)
         SetBadFlag();
 }
 
-map<KeyFrame*, size_t> MapPoint::GetObservations()
+std::map<KeyFrame*, size_t> MapPoint::GetObservations()
 {
     std::unique_lock<std::mutex> lock(mMutexFeatures);
     return mObservations;
@@ -150,7 +150,7 @@ int MapPoint::Observations()
 
 void MapPoint::SetBadFlag()
 {
-    map<KeyFrame*,size_t> obs;
+    std::map<KeyFrame*,size_t> obs;
     {
         std::unique_lock<std::mutex> lock1(mMutexFeatures);
         std::unique_lock<std::mutex> lock2(mMutexPos);
@@ -158,7 +158,7 @@ void MapPoint::SetBadFlag()
         obs = mObservations;
         mObservations.clear();
     }
-    for(map<KeyFrame*,size_t>::iterator mit=obs.begin(), mend=obs.end(); mit!=mend; mit++)
+    for(std::map<KeyFrame*,size_t>::iterator mit=obs.begin(), mend=obs.end(); mit!=mend; mit++)
     {
         KeyFrame* pKF = mit->first;
         pKF->EraseMapPointMatch(mit->second);
@@ -180,7 +180,7 @@ void MapPoint::Replace(MapPoint* pMP)
         return;
 
     int nvisible, nfound;
-    map<KeyFrame*,size_t> obs;
+    std::map<KeyFrame*,size_t> obs;
     {
         std::unique_lock<std::mutex> lock1(mMutexFeatures);
         std::unique_lock<std::mutex> lock2(mMutexPos);
@@ -192,7 +192,7 @@ void MapPoint::Replace(MapPoint* pMP)
         mpReplaced = pMP;
     }
 
-    for(map<KeyFrame*,size_t>::iterator mit=obs.begin(), mend=obs.end(); mit!=mend; mit++)
+    for(std::map<KeyFrame*,size_t>::iterator mit=obs.begin(), mend=obs.end(); mit!=mend; mit++)
     {
         // Replace measurement in keyframe
         KeyFrame* pKF = mit->first;
@@ -244,7 +244,7 @@ void MapPoint::ComputeDistinctiveDescriptors()
     // Retrieve all observed descriptors
     std::vector<cv::Mat> vDescriptors;
 
-    map<KeyFrame*,size_t> observations;
+    std::map<KeyFrame*,size_t> observations;
 
     {
         std::unique_lock<std::mutex> lock1(mMutexFeatures);
@@ -258,7 +258,7 @@ void MapPoint::ComputeDistinctiveDescriptors()
 
     vDescriptors.reserve(observations.size());
 
-    for(map<KeyFrame*,size_t>::iterator mit=observations.begin(), mend=observations.end(); mit!=mend; mit++)
+    for(std::map<KeyFrame*,size_t>::iterator mit=observations.begin(), mend=observations.end(); mit!=mend; mit++)
     {
         KeyFrame* pKF = mit->first;
 
@@ -329,7 +329,7 @@ bool MapPoint::IsInKeyFrame(KeyFrame *pKF)
 
 void MapPoint::UpdateNormalAndDepth()
 {
-    map<KeyFrame*,size_t> observations;
+    std::map<KeyFrame*,size_t> observations;
     KeyFrame* pRefKF;
     cv::Mat Pos;
     {
@@ -347,7 +347,7 @@ void MapPoint::UpdateNormalAndDepth()
 
     cv::Mat normal = cv::Mat::zeros(3,1,CV_32F);
     int n=0;
-    for(map<KeyFrame*,size_t>::iterator mit=observations.begin(), mend=observations.end(); mit!=mend; mit++)
+    for(std::map<KeyFrame*,size_t>::iterator mit=observations.begin(), mend=observations.end(); mit!=mend; mit++)
     {
         KeyFrame* pKF = mit->first;
         cv::Mat Owi = pKF->GetCameraCenter();
