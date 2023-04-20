@@ -56,7 +56,7 @@ bool Initializer::Initialize(const Frame &CurrentFrame, const std::vector<int> &
     {
         if(vMatches12[i]>=0)
         {
-            mvMatches12.push_back(make_pair(i,vMatches12[i]));
+            mvMatches12.push_back(std::make_pair<(i,vMatches12[i]));
             mvbMatched1[i]=true;
         }
         else

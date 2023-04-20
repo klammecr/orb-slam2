@@ -654,7 +654,7 @@ int SPmatcher::SearchByBoW(KeyFrame *pKF1, KeyFrame *pKF2, std::vector<MapPoint 
 }
 
 int SPmatcher::SearchForTriangulation(KeyFrame *pKF1, KeyFrame *pKF2, cv::Mat F12,
-                                       std::vector<pair<size_t, size_t> > &vMatchedPairs, const bool bOnlyStereo)
+                                       std::vector<std::pair<size_t, size_t> > &vMatchedPairs, const bool bOnlyStereo)
 {    
     const DBoW3::FeatureVector &vFeatVec1 = pKF1->mFeatVec;
     const DBoW3::FeatureVector &vFeatVec2 = pKF2->mFeatVec;

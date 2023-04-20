@@ -229,7 +229,7 @@ std::vector<cv::KeyPoint> SPextractor::DistributeOctTree(const std::vector<cv::K
 
     int iteration = 0;
 
-    std::vector<pair<int,ExtractorNode*> > vSizeAndPointerToNode;
+    std::vector<std::pair<int,ExtractorNode*> > vSizeAndPointerToNode;
     vSizeAndPointerToNode.reserve(lNodes.size()*4);
 
     while(!bFinish)
@@ -319,7 +319,7 @@ std::vector<cv::KeyPoint> SPextractor::DistributeOctTree(const std::vector<cv::K
 
                 prevSize = lNodes.size();
 
-                std::vector<pair<int,ExtractorNode*> > vPrevSizeAndPointerToNode = vSizeAndPointerToNode;
+                std::vector<std::pair<int,ExtractorNode*> > vPrevSizeAndPointerToNode = vSizeAndPointerToNode;
                 vSizeAndPointerToNode.clear();
 
                 sort(vPrevSizeAndPointerToNode.begin(),vPrevSizeAndPointerToNode.end());
