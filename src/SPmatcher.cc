@@ -301,7 +301,7 @@ int SPmatcher::SearchByProjection(KeyFrame* pKF, cv::Mat Scw, const std::vector<
     cv::Mat Ow = -Rcw.t()*tcw;
 
     // Set of MapPoints already found in the KeyFrame
-    set<MapPoint*> spAlreadyFound(vpMatched.begin(), vpMatched.end());
+    std::set<MapPoint*> spAlreadyFound(vpMatched.begin(), vpMatched.end());
     spAlreadyFound.erase(static_cast<MapPoint*>(NULL));
 
     int nmatches=0;
@@ -989,7 +989,7 @@ int SPmatcher::Fuse(KeyFrame *pKF, cv::Mat Scw, const std::vector<MapPoint *> &v
     cv::Mat Ow = -Rcw.t()*tcw;
 
     // Set of MapPoints already found in the KeyFrame
-    const set<MapPoint*> spAlreadyFound = pKF->GetMapPoints();
+    const std::set<MapPoint*> spAlreadyFound = pKF->GetMapPoints();
 
     int nFused=0;
 
@@ -1468,7 +1468,7 @@ int SPmatcher::SearchByProjection(Frame &CurrentFrame, const Frame &LastFrame, c
     return nmatches;
 }
 
-int SPmatcher::SearchByProjection(Frame &CurrentFrame, KeyFrame *pKF, const set<MapPoint*> &sAlreadyFound, const float th , const int SPdist)
+int SPmatcher::SearchByProjection(Frame &CurrentFrame, KeyFrame *pKF, const std::set<MapPoint*> &sAlreadyFound, const float th , const int SPdist)
 {
     int nmatches = 0;
 

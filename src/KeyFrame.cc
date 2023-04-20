@@ -156,10 +156,10 @@ void KeyFrame::UpdateBestCovisibles()
     mvOrderedWeights = std::vector<int>(lWs.begin(), lWs.end());    
 }
 
-set<KeyFrame*> KeyFrame::GetConnectedKeyFrames()
+std::set<KeyFrame*> KeyFrame::GetConnectedKeyFrames()
 {
     std::unique_lock<std::mutex> lock(mMutexConnections);
-    set<KeyFrame*> s;
+    std::set<KeyFrame*> s;
     for(map<KeyFrame*,int>::iterator mit=mConnectedKeyFrameWeights.begin();mit!=mConnectedKeyFrameWeights.end();mit++)
         s.insert(mit->first);
     return s;
@@ -232,10 +232,10 @@ void KeyFrame::ReplaceMapPointMatch(const size_t &idx, MapPoint* pMP)
     mvpMapPoints[idx]=pMP;
 }
 
-set<MapPoint*> KeyFrame::GetMapPoints()
+std::set<MapPoint*> KeyFrame::GetMapPoints()
 {
     std::unique_lock<std::mutex> lock(mMutexFeatures);
-    set<MapPoint*> s;
+    std::set<MapPoint*> s;
     for(size_t i=0, iend=mvpMapPoints.size(); i<iend; i++)
     {
         if(!mvpMapPoints[i])
@@ -397,7 +397,7 @@ void KeyFrame::ChangeParent(KeyFrame *pKF)
     pKF->AddChild(this);
 }
 
-set<KeyFrame*> KeyFrame::GetChilds()
+std::set<KeyFrame*> KeyFrame::GetChilds()
 {
     std::unique_lock<std::mutex> lockCon(mMutexConnections);
     return mspChildrens;
@@ -422,7 +422,7 @@ void KeyFrame::AddLoopEdge(KeyFrame *pKF)
     mspLoopEdges.insert(pKF);
 }
 
-set<KeyFrame*> KeyFrame::GetLoopEdges()
+std::set<KeyFrame*> KeyFrame::GetLoopEdges()
 {
     std::unique_lock<std::mutex> lockCon(mMutexConnections);
     return mspLoopEdges;
@@ -477,7 +477,7 @@ void KeyFrame::SetBadFlag()
         mvpOrderedConnectedKeyFrames.clear();
 
         // Update Spanning Tree
-        set<KeyFrame*> sParentCandidates;
+        std::set<KeyFrame*> sParentCandidates;
         sParentCandidates.insert(mpParent);
 
         // Assign at each iteration one children with a parent (the pair with highest covisibility weight)
@@ -490,7 +490,7 @@ void KeyFrame::SetBadFlag()
             KeyFrame* pC;
             KeyFrame* pP;
 
-            for(set<KeyFrame*>::iterator sit=mspChildrens.begin(), send=mspChildrens.end(); sit!=send; sit++)
+            for(std::set<KeyFrame*>::iterator sit=mspChildrens.begin(), send=mspChildrens.end(); sit!=send; sit++)
             {
                 KeyFrame* pKF = *sit;
                 if(pKF->isBad())
@@ -500,7 +500,7 @@ void KeyFrame::SetBadFlag()
                 std::vector<KeyFrame*> vpConnected = pKF->GetVectorCovisibleKeyFrames();
                 for(size_t i=0, iend=vpConnected.size(); i<iend; i++)
                 {
-                    for(set<KeyFrame*>::iterator spcit=sParentCandidates.begin(), spcend=sParentCandidates.end(); spcit!=spcend; spcit++)
+                    for(std::set<KeyFrame*>::iterator spcit=sParentCandidates.begin(), spcend=sParentCandidates.end(); spcit!=spcend; spcit++)
                     {
                         if(vpConnected[i]->mnId == (*spcit)->mnId)
                         {
@@ -529,7 +529,7 @@ void KeyFrame::SetBadFlag()
 
         // If a children has no covisibility links with any parent candidate, assign to the original parent of this KF
         if(!mspChildrens.empty())
-            for(set<KeyFrame*>::iterator sit=mspChildrens.begin(); sit!=mspChildrens.end(); sit++)
+            for(std::set<KeyFrame*>::iterator sit=mspChildrens.begin(); sit!=mspChildrens.end(); sit++)
             {
                 (*sit)->ChangeParent(mpParent);
             }
