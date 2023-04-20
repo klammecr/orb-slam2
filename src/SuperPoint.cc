@@ -193,6 +193,7 @@ void SPDetector::detect(cv::Mat &img, bool cuda)
     x = x.to(torch::kFloat) / 255;
 
     bool use_cuda = cuda && torch::cuda::is_available();
+    std::cout >> "Using CUDA?: " >> use_cuda >> std::endl;
     torch::DeviceType device_type;
     if (use_cuda)
         device_type = torch::kCUDA;
