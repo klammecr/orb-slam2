@@ -11,7 +11,6 @@
 #define __D_TIMESTAMP__
 
 #include <iostream>
-using namespace std;
 
 namespace DUtils {
 
