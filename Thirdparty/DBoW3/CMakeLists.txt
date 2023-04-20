@@ -27,7 +27,8 @@ set(SRCS_DBOW3
   src/Vocabulary.cpp)
 
 
-find_package(OpenCV 3.0 QUIET)
+
+find_package(OpenCV 4.5.4 QUIET REQUIRED)
 if(NOT OpenCV_FOUND)
    find_package(OpenCV 2.4.3 QUIET)
    if(NOT OpenCV_FOUND)
