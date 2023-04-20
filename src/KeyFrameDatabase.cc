@@ -25,8 +25,6 @@
 
 #include<mutex>
 
-using namespace std;
-
 namespace ORB_SLAM2
 {
 
