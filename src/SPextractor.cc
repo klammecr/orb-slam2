@@ -63,9 +63,6 @@
 #include "SPextractor.h"
 #include "SuperPoint.h"
 
-using namespace cv;
-using namespace std;
-
 namespace ORB_SLAM2
 {
 

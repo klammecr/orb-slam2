@@ -32,8 +32,6 @@
 
 #include "Timestamp.h"
 
-using namespace std;
-
 using namespace DUtils;
 
 Timestamp::Timestamp(Timestamp::tOptions option)
