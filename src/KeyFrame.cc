@@ -141,7 +141,7 @@ void KeyFrame::UpdateBestCovisibles()
     std::vector<std::pair<int,KeyFrame*> > vPairs;
     vPairs.reserve(mConnectedKeyFrameWeights.size());
     for(map<KeyFrame*,int>::iterator mit=mConnectedKeyFrameWeights.begin(), mend=mConnectedKeyFrameWeights.end(); mit!=mend; mit++)
-       vPairs.push_back(std::make_pair<(mit->second,mit->first));
+       vPairs.push_back(std::make_pair(mit->second,mit->first));
 
     sort(vPairs.begin(),vPairs.end());
     std::list<KeyFrame*> lKFs;
@@ -340,14 +340,14 @@ void KeyFrame::UpdateConnections()
         }
         if(mit->second>=th)
         {
-            vPairs.push_back(std::make_pair<(mit->second,mit->first));
+            vPairs.push_back(std::make_pair(mit->second,mit->first));
             (mit->first)->AddConnection(this,mit->second);
         }
     }
 
     if(vPairs.empty())
     {
-        vPairs.push_back(std::make_pair<(nmax,pKFmax));
+        vPairs.push_back(std::make_pair(nmax,pKFmax));
         pKFmax->AddConnection(this,nmax);
     }
 

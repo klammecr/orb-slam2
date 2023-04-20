@@ -191,7 +191,7 @@ bool LoopClosing::DetectLoop()
                 int nCurrentConsistency = nPreviousConsistency + 1;
                 if(!vbConsistentGroup[iG])
                 {
-                    ConsistentGroup cg = std::make_pair<(spCandidateGroup,nCurrentConsistency);
+                    ConsistentGroup cg = std::make_pair(spCandidateGroup,nCurrentConsistency);
                     vCurrentConsistentGroups.push_back(cg);
                     vbConsistentGroup[iG]=true; //this avoid to include the same group more than once
                 }
@@ -206,7 +206,7 @@ bool LoopClosing::DetectLoop()
         // If the group is not consistent with any previous group insert with consistency counter set to zero
         if(!bConsistentForSomeGroup)
         {
-            ConsistentGroup cg = std::make_pair<(spCandidateGroup,0);
+            ConsistentGroup cg = std::make_pair(spCandidateGroup,0);
             vCurrentConsistentGroups.push_back(cg);
         }
     }

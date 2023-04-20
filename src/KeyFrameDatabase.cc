@@ -132,7 +132,7 @@ std::vector<KeyFrame*> KeyFrameDatabase::DetectLoopCandidates(KeyFrame* pKF, flo
 
             pKFi->mLoopScore = si;
             if(si>=minScore)
-                lScoreAndMatch.push_back(std::make_pair<(si,pKFi));
+                lScoreAndMatch.push_back(std::make_pair(si,pKFi));
         }
     }
 
@@ -165,7 +165,7 @@ std::vector<KeyFrame*> KeyFrameDatabase::DetectLoopCandidates(KeyFrame* pKF, flo
             }
         }
 
-        lAccScoreAndMatch.push_back(std::make_pair<(accScore,pBestKF));
+        lAccScoreAndMatch.push_back(std::make_pair(accScore,pBestKF));
         if(accScore>bestAccScore)
             bestAccScore=accScore;
     }
@@ -246,7 +246,7 @@ std::vector<KeyFrame*> KeyFrameDatabase::DetectRelocalizationCandidates(Frame *F
             nscores++;
             float si = mpVoc->score(F->mBowVec,pKFi->mBowVec);
             pKFi->mRelocScore=si;
-            lScoreAndMatch.push_back(std::make_pair<(si,pKFi));
+            lScoreAndMatch.push_back(std::make_pair(si,pKFi));
         }
     }
 
@@ -279,7 +279,7 @@ std::vector<KeyFrame*> KeyFrameDatabase::DetectRelocalizationCandidates(Frame *F
             }
 
         }
-        lAccScoreAndMatch.push_back(std::make_pair<(accScore,pBestKF));
+        lAccScoreAndMatch.push_back(std::make_pair(accScore,pBestKF));
         if(accScore>bestAccScore)
             bestAccScore=accScore;
     }

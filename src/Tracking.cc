@@ -819,7 +819,7 @@ void Tracking::UpdateLastFrame()
         float z = mLastFrame.mvDepth[i];
         if(z>0)
         {
-            vDepthIdx.push_back(std::make_pair<(z,i));
+            vDepthIdx.push_back(std::make_pair(z,i));
         }
     }
 
@@ -1085,7 +1085,7 @@ void Tracking::CreateNewKeyFrame()
             float z = mCurrentFrame.mvDepth[i];
             if(z>0)
             {
-                vDepthIdx.push_back(std::make_pair<(z,i));
+                vDepthIdx.push_back(std::make_pair(z,i));
             }
         }
 
