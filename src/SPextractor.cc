@@ -265,7 +265,7 @@ std::vector<cv::KeyPoint> SPextractor::DistributeOctTree(const std::vector<cv::K
                     if(n1.vKeys.size()>1)
                     {
                         nToExpand++;
-                        vSizeAndPointerToNode.push_back(make_pair(n1.vKeys.size(),&lNodes.front()));
+                        vSizeAndPointerToNode.push_back(std::make_pair(n1.vKeys.size(),&lNodes.front()));
                         lNodes.front().lit = lNodes.begin();
                     }
                 }
@@ -275,7 +275,7 @@ std::vector<cv::KeyPoint> SPextractor::DistributeOctTree(const std::vector<cv::K
                     if(n2.vKeys.size()>1)
                     {
                         nToExpand++;
-                        vSizeAndPointerToNode.push_back(make_pair(n2.vKeys.size(),&lNodes.front()));
+                        vSizeAndPointerToNode.push_back(std::make_pair(n2.vKeys.size(),&lNodes.front()));
                         lNodes.front().lit = lNodes.begin();
                     }
                 }
@@ -285,7 +285,7 @@ std::vector<cv::KeyPoint> SPextractor::DistributeOctTree(const std::vector<cv::K
                     if(n3.vKeys.size()>1)
                     {
                         nToExpand++;
-                        vSizeAndPointerToNode.push_back(make_pair(n3.vKeys.size(),&lNodes.front()));
+                        vSizeAndPointerToNode.push_back(std::make_pair(n3.vKeys.size(),&lNodes.front()));
                         lNodes.front().lit = lNodes.begin();
                     }
                 }
@@ -295,7 +295,7 @@ std::vector<cv::KeyPoint> SPextractor::DistributeOctTree(const std::vector<cv::K
                     if(n4.vKeys.size()>1)
                     {
                         nToExpand++;
-                        vSizeAndPointerToNode.push_back(make_pair(n4.vKeys.size(),&lNodes.front()));
+                        vSizeAndPointerToNode.push_back(std::make_pair(n4.vKeys.size(),&lNodes.front()));
                         lNodes.front().lit = lNodes.begin();
                     }
                 }
@@ -334,7 +334,7 @@ std::vector<cv::KeyPoint> SPextractor::DistributeOctTree(const std::vector<cv::K
                         lNodes.push_front(n1);
                         if(n1.vKeys.size()>1)
                         {
-                            vSizeAndPointerToNode.push_back(make_pair(n1.vKeys.size(),&lNodes.front()));
+                            vSizeAndPointerToNode.push_back(std::make_pair(n1.vKeys.size(),&lNodes.front()));
                             lNodes.front().lit = lNodes.begin();
                         }
                     }
@@ -343,7 +343,7 @@ std::vector<cv::KeyPoint> SPextractor::DistributeOctTree(const std::vector<cv::K
                         lNodes.push_front(n2);
                         if(n2.vKeys.size()>1)
                         {
-                            vSizeAndPointerToNode.push_back(make_pair(n2.vKeys.size(),&lNodes.front()));
+                            vSizeAndPointerToNode.push_back(std::make_pair(n2.vKeys.size(),&lNodes.front()));
                             lNodes.front().lit = lNodes.begin();
                         }
                     }
@@ -352,7 +352,7 @@ std::vector<cv::KeyPoint> SPextractor::DistributeOctTree(const std::vector<cv::K
                         lNodes.push_front(n3);
                         if(n3.vKeys.size()>1)
                         {
-                            vSizeAndPointerToNode.push_back(make_pair(n3.vKeys.size(),&lNodes.front()));
+                            vSizeAndPointerToNode.push_back(std::make_pair(n3.vKeys.size(),&lNodes.front()));
                             lNodes.front().lit = lNodes.begin();
                         }
                     }
@@ -361,7 +361,7 @@ std::vector<cv::KeyPoint> SPextractor::DistributeOctTree(const std::vector<cv::K
                         lNodes.push_front(n4);
                         if(n4.vKeys.size()>1)
                         {
-                            vSizeAndPointerToNode.push_back(make_pair(n4.vKeys.size(),&lNodes.front()));
+                            vSizeAndPointerToNode.push_back(std::make_pair(n4.vKeys.size(),&lNodes.front()));
                             lNodes.front().lit = lNodes.begin();
                         }
                     }
@@ -514,10 +514,10 @@ void SPextractor::operator()( InputArray _image, InputArray _mask, std::vector<K
     if(_image.empty())
         return;
 
-    Mat image = _image.getMat();
+    cv::Mat image = _image.getMat();
     assert(image.type() == CV_8UC1 );
 
-    Mat descriptors;
+    cv::Mat descriptors;
 
     // Pre-compute the scale pyramid
     ComputePyramid(image);
@@ -612,21 +612,21 @@ void SPextractor::ComputePyramid(cv::Mat image)
         float scale = mvInvScaleFactor[level];
         Size sz(cvRound((float)image.cols*scale), cvRound((float)image.rows*scale));
         Size wholeSize(sz.width + EDGE_THRESHOLD*2, sz.height + EDGE_THRESHOLD*2);
-        Mat temp(wholeSize, image.type()), masktemp;
-        mvImagePyramid[level] = temp(Rect(EDGE_THRESHOLD, EDGE_THRESHOLD, sz.width, sz.height));
+        cv::Mat temp(wholeSize, image.type()), masktemp;
+        mvImagePyramid[level] = temp(cv::Rect(EDGE_THRESHOLD, EDGE_THRESHOLD, sz.width, sz.height));
 
         // Compute the resized image
         if( level != 0 )
         {
-            resize(mvImagePyramid[level-1], mvImagePyramid[level], sz, 0, 0, INTER_LINEAR);
+            resize(mvImagePyramid[level-1], mvImagePyramid[level], sz, 0, 0, cv::INTER_LINEAR);
 
             copyMakeBorder(mvImagePyramid[level], temp, EDGE_THRESHOLD, EDGE_THRESHOLD, EDGE_THRESHOLD, EDGE_THRESHOLD,
-                           BORDER_REFLECT_101+BORDER_ISOLATED);            
+                           cv::BORDER_REFLECT_101+cv::BORDER_ISOLATED);            
         }
         else
         {
             copyMakeBorder(image, temp, EDGE_THRESHOLD, EDGE_THRESHOLD, EDGE_THRESHOLD, EDGE_THRESHOLD,
-                           BORDER_REFLECT_101);            
+                           cv::BORDER_REFLECT_101);            
         }
     }
 

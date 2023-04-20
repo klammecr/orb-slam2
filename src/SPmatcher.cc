@@ -815,7 +815,7 @@ int SPmatcher::SearchForTriangulation(KeyFrame *pKF1, KeyFrame *pKF2, cv::Mat F1
     {
         if(vMatches12[i]<0)
             continue;
-        vMatchedPairs.push_back(make_pair(i,vMatches12[i]));
+        vMatchedPairs.push_back(std::make_pair(i,vMatches12[i]));
     }
 
     return nmatches;
