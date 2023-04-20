@@ -93,7 +93,7 @@ public:
 	/**
 	 * Returns this timestamp as the number of seconds in fixed length std::string format
 	 */
-	std::string getstd::stringTime() const;
+	std::string getStringTime() const;
 
 	/**
 	 * Returns the difference in seconds between this timestamp (greater) and t (smaller)
