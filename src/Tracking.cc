@@ -87,27 +87,27 @@ Tracking::Tracking(System *pSys, ORBVocabulary* pVoc, FrameDrawer *pFrameDrawer,
     mMinFrames = 0;
     mMaxFrames = fps;
 
-    cout << endl << "Camera Parameters: " << endl;
-    cout << "- fx: " << fx << endl;
-    cout << "- fy: " << fy << endl;
-    cout << "- cx: " << cx << endl;
-    cout << "- cy: " << cy << endl;
-    cout << "- k1: " << DistCoef.at<float>(0) << endl;
-    cout << "- k2: " << DistCoef.at<float>(1) << endl;
+    std::cout << std::endl << "Camera Parameters: " << std::endl;
+    std::cout << "- fx: " << fx << std::endl;
+    std::cout << "- fy: " << fy << std::endl;
+    std::cout << "- cx: " << cx << std::endl;
+    std::cout << "- cy: " << cy << std::endl;
+    std::cout << "- k1: " << DistCoef.at<float>(0) << std::endl;
+    std::cout << "- k2: " << DistCoef.at<float>(1) << std::endl;
     if(DistCoef.rows==5)
-        cout << "- k3: " << DistCoef.at<float>(4) << endl;
-    cout << "- p1: " << DistCoef.at<float>(2) << endl;
-    cout << "- p2: " << DistCoef.at<float>(3) << endl;
-    cout << "- fps: " << fps << endl;
+        std::cout << "- k3: " << DistCoef.at<float>(4) << std::endl;
+    std::cout << "- p1: " << DistCoef.at<float>(2) << std::endl;
+    std::cout << "- p2: " << DistCoef.at<float>(3) << std::endl;
+    std::cout << "- fps: " << fps << std::endl;
 
 
     int nRGB = fSettings["Camera.RGB"];
     mbRGB = nRGB;
 
     if(mbRGB)
-        cout << "- color order: RGB (ignored if grayscale)" << endl;
+        std::cout << "- color order: RGB (ignored if grayscale)" << std::endl;
     else
-        cout << "- color order: BGR (ignored if grayscale)" << endl;
+        std::cout << "- color order: BGR (ignored if grayscale)" << std::endl;
 
     // Load ORB parameters
 
@@ -125,17 +125,17 @@ Tracking::Tracking(System *pSys, ORBVocabulary* pVoc, FrameDrawer *pFrameDrawer,
     if(sensor==System::MONOCULAR)
         mpIniORBextractor = new ORBextractor(2*nFeatures,fScaleFactor,nLevels,fIniThFAST,fMinThFAST);
 
-    cout << endl  << "ORB Extractor Parameters: " << endl;
-    cout << "- Number of Features: " << nFeatures << endl;
-    cout << "- Scale Levels: " << nLevels << endl;
-    cout << "- Scale Factor: " << fScaleFactor << endl;
-    cout << "- Initial Fast Threshold: " << fIniThFAST << endl;
-    cout << "- Minimum Fast Threshold: " << fMinThFAST << endl;
+    std::cout << std::endl  << "ORB Extractor Parameters: " << std::endl;
+    std::cout << "- Number of Features: " << nFeatures << std::endl;
+    std::cout << "- Scale Levels: " << nLevels << std::endl;
+    std::cout << "- Scale Factor: " << fScaleFactor << std::endl;
+    std::cout << "- Initial Fast Threshold: " << fIniThFAST << std::endl;
+    std::cout << "- Minimum Fast Threshold: " << fMinThFAST << std::endl;
 
     if(sensor==System::STEREO || sensor==System::RGBD)
     {
         mThDepth = mbf*(float)fSettings["ThDepth"]/fx;
-        cout << endl << "Depth Threshold (Close/Far Points): " << mThDepth << endl;
+        std::cout << std::endl << "Depth Threshold (Close/Far Points): " << mThDepth << std::endl;
     }
 
     if(sensor==System::RGBD)
@@ -354,8 +354,8 @@ void Tracking::Track()
 
                     bool bOKMM = false;
                     bool bOKReloc = false;
-                    vector<MapPoint*> vpMPsMM;
-                    vector<bool> vbOutMM;
+                    std::vector<MapPoint*> vpMPsMM;
+                    std::vector<bool> vbOutMM;
                     cv::Mat TcwMM;
                     if(!mVelocity.empty())
                     {
@@ -447,7 +447,7 @@ void Tracking::Track()
             }
 
             // Delete temporal MapPoints
-            for(list<MapPoint*>::iterator lit = mlpTemporalPoints.begin(), lend =  mlpTemporalPoints.end(); lit!=lend; lit++)
+            for(std::list<MapPoint*>::iterator lit = mlpTemporalPoints.begin(), lend =  mlpTemporalPoints.end(); lit!=lend; lit++)
             {
                 MapPoint* pMP = *lit;
                 delete pMP;
@@ -474,7 +474,7 @@ void Tracking::Track()
         {
             if(mpMap->KeyFramesInMap()<=5)
             {
-                cout << "Track lost soon after initialisation, reseting..." << endl;
+                std::cout << "Track lost soon after initialisation, reseting..." << std::endl;
                 mpSystem->Reset();
                 return;
             }
@@ -538,7 +538,7 @@ void Tracking::StereoInitialization()
             }
         }
 
-        cout << "New map created with " << mpMap->MapPointsInMap() << " points" << endl;
+        std::cout << "New map created with " << mpMap->MapPointsInMap() << " points" << std::endl;
 
         mpLocalMapper->InsertKeyFrame(pKFini);
 
@@ -610,7 +610,7 @@ void Tracking::MonocularInitialization()
 
         cv::Mat Rcw; // Current Camera Rotation
         cv::Mat tcw; // Current Camera Translation
-        vector<bool> vbTriangulated; // Triangulated Correspondences (mvIniMatches)
+        std::vector<bool> vbTriangulated; // Triangulated Correspondences (mvIniMatches)
 
         if(mpInitializer->Initialize(mCurrentFrame, mvIniMatches, Rcw, tcw, mvIniP3D, vbTriangulated))
         {
@@ -682,7 +682,7 @@ void Tracking::CreateInitialMapMonocular()
     pKFcur->UpdateConnections();
 
     // Bundle Adjustment
-    cout << "New Map created with " << mpMap->MapPointsInMap() << " points" << endl;
+    std::cout << "New Map created with " << mpMap->MapPointsInMap() << " points" << std::endl;
 
     Optimizer::GlobalBundleAdjustemnt(mpMap,20);
 
@@ -692,7 +692,7 @@ void Tracking::CreateInitialMapMonocular()
 
     if(medianDepth<0 || pKFcur->TrackedMapPoints(1)<100)
     {
-        cout << "Wrong initialization, reseting..." << endl;
+        std::cout << "Wrong initialization, reseting..." << std::endl;
         Reset();
         return;
     }
@@ -703,7 +703,7 @@ void Tracking::CreateInitialMapMonocular()
     pKFcur->SetPose(Tc2w);
 
     // Scale points
-    vector<MapPoint*> vpAllMapPoints = pKFini->GetMapPointMatches();
+    std::vector<MapPoint*> vpAllMapPoints = pKFini->GetMapPointMatches();
     for(size_t iMP=0; iMP<vpAllMapPoints.size(); iMP++)
     {
         if(vpAllMapPoints[iMP])
@@ -757,13 +757,13 @@ void Tracking::CheckReplacedInLastFrame()
 
 bool Tracking::TrackReferenceKeyFrame()
 {
-    // Compute Bag of Words vector
+    // Compute Bag of Words std::vector
     mCurrentFrame.ComputeBoW();
 
     // We perform first an ORB matching with the reference keyframe
     // If enough matches are found we setup a PnP solver
     ORBmatcher matcher(0.7,true);
-    vector<MapPoint*> vpMapPointMatches;
+    std::vector<MapPoint*> vpMapPointMatches;
 
     int nmatches = matcher.SearchByBoW(mpReferenceKF,mCurrentFrame,vpMapPointMatches);
 
@@ -812,7 +812,7 @@ void Tracking::UpdateLastFrame()
 
     // Create "visual odometry" MapPoints
     // We sort points according to their measured depth by the stereo/RGB-D sensor
-    vector<pair<float,int> > vDepthIdx;
+    std::vector<pair<float,int> > vDepthIdx;
     vDepthIdx.reserve(mLastFrame.N);
     for(int i=0; i<mLastFrame.N;i++)
     {
@@ -1078,7 +1078,7 @@ void Tracking::CreateNewKeyFrame()
         // We sort points by the measured depth by the stereo/RGBD sensor.
         // We create all those MapPoints whose depth < mThDepth.
         // If there are less than 100 close points we create the 100 closest.
-        vector<pair<float,int> > vDepthIdx;
+        std::vector<pair<float,int> > vDepthIdx;
         vDepthIdx.reserve(mCurrentFrame.N);
         for(int i=0; i<mCurrentFrame.N; i++)
         {
@@ -1144,7 +1144,7 @@ void Tracking::CreateNewKeyFrame()
 void Tracking::SearchLocalPoints()
 {
     // Do not search map points already matched
-    for(vector<MapPoint*>::iterator vit=mCurrentFrame.mvpMapPoints.begin(), vend=mCurrentFrame.mvpMapPoints.end(); vit!=vend; vit++)
+    for(std::vector<MapPoint*>::iterator vit=mCurrentFrame.mvpMapPoints.begin(), vend=mCurrentFrame.mvpMapPoints.end(); vit!=vend; vit++)
     {
         MapPoint* pMP = *vit;
         if(pMP)
@@ -1165,7 +1165,7 @@ void Tracking::SearchLocalPoints()
     int nToMatch=0;
 
     // Project points in frame and check its visibility
-    for(vector<MapPoint*>::iterator vit=mvpLocalMapPoints.begin(), vend=mvpLocalMapPoints.end(); vit!=vend; vit++)
+    for(std::vector<MapPoint*>::iterator vit=mvpLocalMapPoints.begin(), vend=mvpLocalMapPoints.end(); vit!=vend; vit++)
     {
         MapPoint* pMP = *vit;
         if(pMP->mnLastFrameSeen == mCurrentFrame.mnId)
@@ -1207,12 +1207,12 @@ void Tracking::UpdateLocalPoints()
 {
     mvpLocalMapPoints.clear();
 
-    for(vector<KeyFrame*>::const_iterator itKF=mvpLocalKeyFrames.begin(), itEndKF=mvpLocalKeyFrames.end(); itKF!=itEndKF; itKF++)
+    for(std::vector<KeyFrame*>::const_iterator itKF=mvpLocalKeyFrames.begin(), itEndKF=mvpLocalKeyFrames.end(); itKF!=itEndKF; itKF++)
     {
         KeyFrame* pKF = *itKF;
-        const vector<MapPoint*> vpMPs = pKF->GetMapPointMatches();
+        const std::vector<MapPoint*> vpMPs = pKF->GetMapPointMatches();
 
-        for(vector<MapPoint*>::const_iterator itMP=vpMPs.begin(), itEndMP=vpMPs.end(); itMP!=itEndMP; itMP++)
+        for(std::vector<MapPoint*>::const_iterator itMP=vpMPs.begin(), itEndMP=vpMPs.end(); itMP!=itEndMP; itMP++)
         {
             MapPoint* pMP = *itMP;
             if(!pMP)
@@ -1280,7 +1280,7 @@ void Tracking::UpdateLocalKeyFrames()
 
 
     // Include also some not-already-included keyframes that are neighbors to already-included keyframes
-    for(vector<KeyFrame*>::const_iterator itKF=mvpLocalKeyFrames.begin(), itEndKF=mvpLocalKeyFrames.end(); itKF!=itEndKF; itKF++)
+    for(std::vector<KeyFrame*>::const_iterator itKF=mvpLocalKeyFrames.begin(), itEndKF=mvpLocalKeyFrames.end(); itKF!=itEndKF; itKF++)
     {
         // Limit the number of keyframes
         if(mvpLocalKeyFrames.size()>80)
@@ -1288,9 +1288,9 @@ void Tracking::UpdateLocalKeyFrames()
 
         KeyFrame* pKF = *itKF;
 
-        const vector<KeyFrame*> vNeighs = pKF->GetBestCovisibilityKeyFrames(10);
+        const std::vector<KeyFrame*> vNeighs = pKF->GetBestCovisibilityKeyFrames(10);
 
-        for(vector<KeyFrame*>::const_iterator itNeighKF=vNeighs.begin(), itEndNeighKF=vNeighs.end(); itNeighKF!=itEndNeighKF; itNeighKF++)
+        for(std::vector<KeyFrame*>::const_iterator itNeighKF=vNeighs.begin(), itEndNeighKF=vNeighs.end(); itNeighKF!=itEndNeighKF; itNeighKF++)
         {
             KeyFrame* pNeighKF = *itNeighKF;
             if(!pNeighKF->isBad())
@@ -1341,12 +1341,12 @@ void Tracking::UpdateLocalKeyFrames()
 
 bool Tracking::Relocalization()
 {
-    // Compute Bag of Words Vector
+    // Compute Bag of Words std::vector
     mCurrentFrame.ComputeBoW();
 
     // Relocalization is performed when tracking is lost
     // Track Lost: Query KeyFrame Database for keyframe candidates for relocalisation
-    vector<KeyFrame*> vpCandidateKFs = mpKeyFrameDB->DetectRelocalizationCandidates(&mCurrentFrame);
+    std::vector<KeyFrame*> vpCandidateKFs = mpKeyFrameDB->DetectRelocalizationCandidates(&mCurrentFrame);
 
     if(vpCandidateKFs.empty())
         return false;
@@ -1357,13 +1357,13 @@ bool Tracking::Relocalization()
     // If enough matches are found we setup a PnP solver
     ORBmatcher matcher(0.75,true);
 
-    vector<PnPsolver*> vpPnPsolvers;
+    std::vector<PnPsolver*> vpPnPsolvers;
     vpPnPsolvers.resize(nKFs);
 
-    vector<vector<MapPoint*> > vvpMapPointMatches;
+    std::vector<std::vector<MapPoint*> > vvpMapPointMatches;
     vvpMapPointMatches.resize(nKFs);
 
-    vector<bool> vbDiscarded;
+    std::vector<bool> vbDiscarded;
     vbDiscarded.resize(nKFs);
 
     int nCandidates=0;
@@ -1404,7 +1404,7 @@ bool Tracking::Relocalization()
                 continue;
 
             // Perform 5 Ransac Iterations
-            vector<bool> vbInliers;
+            std::vector<bool> vbInliers;
             int nInliers;
             bool bNoMore;
 
@@ -1505,7 +1505,7 @@ bool Tracking::Relocalization()
 void Tracking::Reset()
 {
 
-    cout << "System Reseting" << endl;
+    std::cout << "System Reseting" << std::endl;
     if(mpViewer)
     {
         mpViewer->RequestStop();
@@ -1514,19 +1514,19 @@ void Tracking::Reset()
     }
 
     // Reset Local Mapping
-    cout << "Reseting Local Mapper...";
+    std::cout << "Reseting Local Mapper...";
     mpLocalMapper->RequestReset();
-    cout << " done" << endl;
+    std::cout << " done" << std::endl;
 
     // Reset Loop Closing
-    cout << "Reseting Loop Closing...";
+    std::cout << "Reseting Loop Closing...";
     mpLoopClosing->RequestReset();
-    cout << " done" << endl;
+    std::cout << " done" << std::endl;
 
     // Clear BoW Database
-    cout << "Reseting Database...";
+    std::cout << "Reseting Database...";
     mpKeyFrameDB->clear();
-    cout << " done" << endl;
+    std::cout << " done" << std::endl;
 
     // Clear Map (this erase MapPoints and KeyFrames)
     mpMap->clear();
