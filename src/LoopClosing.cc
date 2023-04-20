@@ -93,21 +93,21 @@ void LoopClosing::Run()
 
 void LoopClosing::InsertKeyFrame(KeyFrame *pKF)
 {
-    std::unique_lock<std::mutex> lock(mstd::mutexLoopQueue);
+    std::unique_lock<std::mutex> lock(std::mutexLoopQueue);
     if(pKF->mnId!=0)
         mlpLoopKeyFrameQueue.push_back(pKF);
 }
 
 bool LoopClosing::CheckNewKeyFrames()
 {
-    std::unique_lock<std::mutex> lock(mstd::mutexLoopQueue);
+    std::unique_lock<std::mutex> lock(std::mutexLoopQueue);
     return(!mlpLoopKeyFrameQueue.empty());
 }
 
 bool LoopClosing::DetectLoop()
 {
     {
-        std::unique_lock<std::mutex> lock(mstd::mutexLoopQueue);
+        std::unique_lock<std::mutex> lock(std::mutexLoopQueue);
         mpCurrentKF = mlpLoopKeyFrameQueue.front();
         mlpLoopKeyFrameQueue.pop_front();
         // Avoid that a keyframe can be erased while it is being process by this thread
@@ -414,7 +414,7 @@ void LoopClosing::CorrectLoop()
     // If a Global Bundle Adjustment is running, abort it
     if(isRunningGBA())
     {
-        std::unique_lock<std::mutex> lock(mstd::mutexGBA);
+        std::unique_lock<std::mutex> lock(std::mutexGBA);
         mbStopGBA = true;
 
         mnFullBAIdx++;
@@ -446,7 +446,7 @@ void LoopClosing::CorrectLoop()
 
     {
         // Get Map std::mutex
-        std::unique_lock<std::mutex> lock(mpMap->mstd::mutexMapUpdate);
+        std::unique_lock<std::mutex> lock(mpMap->std::mutexMapUpdate);
 
         for(std::vector<KeyFrame*>::iterator vit=mvpCurrentConnectedKFs.begin(), vend=mvpCurrentConnectedKFs.end(); vit!=vend; vit++)
         {
@@ -603,7 +603,7 @@ void LoopClosing::SearchAndFuse(const KeyFrameAndPose &CorrectedPosesMap)
         matcher.Fuse(pKF,cvScw,mvpLoopMapPoints,4,vpReplacePoints);
 
         // Get Map std::mutex
-        std::unique_lock<std::mutex> lock(mpMap->mstd::mutexMapUpdate);
+        std::unique_lock<std::mutex> lock(mpMap->std::mutexMapUpdate);
         const int nLP = mvpLoopMapPoints.size();
         for(int i=0; i<nLP;i++)
         {
@@ -620,14 +620,14 @@ void LoopClosing::SearchAndFuse(const KeyFrameAndPose &CorrectedPosesMap)
 void LoopClosing::RequestReset()
 {
     {
-        std::unique_lock<std::mutex> lock(mstd::mutexReset);
+        std::unique_lock<std::mutex> lock(std::mutexReset);
         mbResetRequested = true;
     }
 
     while(1)
     {
         {
-        std::unique_lock<std::mutex> lock2(mstd::mutexReset);
+        std::unique_lock<std::mutex> lock2(std::mutexReset);
         if(!mbResetRequested)
             break;
         }
@@ -637,7 +637,7 @@ void LoopClosing::RequestReset()
 
 void LoopClosing::ResetIfRequested()
 {
-    std::unique_lock<std::mutex> lock(mstd::mutexReset);
+    std::unique_lock<std::mutex> lock(std::mutexReset);
     if(mbResetRequested)
     {
         mlpLoopKeyFrameQueue.clear();
@@ -658,7 +658,7 @@ void LoopClosing::RunGlobalBundleAdjustment(unsigned long nLoopKF)
     // not included in the Global BA and they are not consistent with the updated map.
     // We need to propagate the correction through the spanning tree
     {
-        std::unique_lock<std::mutex> lock(mstd::mutexGBA);
+        std::unique_lock<std::mutex> lock(std::mutexGBA);
         if(idx!=mnFullBAIdx)
             return;
 
@@ -675,7 +675,7 @@ void LoopClosing::RunGlobalBundleAdjustment(unsigned long nLoopKF)
             }
 
             // Get Map std::mutex
-            std::unique_lock<std::mutex> lock(mpMap->mstd::mutexMapUpdate);
+            std::unique_lock<std::mutex> lock(mpMap->std::mutexMapUpdate);
 
             // Correct keyframes starting at map first keyframe
             list<KeyFrame*> lpKFtoCheck(mpMap->mvpKeyFrameOrigins.begin(),mpMap->mvpKeyFrameOrigins.end());
@@ -754,25 +754,25 @@ void LoopClosing::RunGlobalBundleAdjustment(unsigned long nLoopKF)
 
 void LoopClosing::RequestFinish()
 {
-    std::unique_lock<std::mutex> lock(mstd::mutexFinish);
+    std::unique_lock<std::mutex> lock(std::mutexFinish);
     mbFinishRequested = true;
 }
 
 bool LoopClosing::CheckFinish()
 {
-    std::unique_lock<std::mutex> lock(mstd::mutexFinish);
+    std::unique_lock<std::mutex> lock(std::mutexFinish);
     return mbFinishRequested;
 }
 
 void LoopClosing::SetFinish()
 {
-    std::unique_lock<std::mutex> lock(mstd::mutexFinish);
+    std::unique_lock<std::mutex> lock(std::mutexFinish);
     mbFinished = true;
 }
 
 bool LoopClosing::isFinished()
 {
-    std::unique_lock<std::mutex> lock(mstd::mutexFinish);
+    std::unique_lock<std::mutex> lock(std::mutexFinish);
     return mbFinished;
 }
 
