@@ -342,7 +342,7 @@ void System::SaveTrajectoryTUM(const std::string &filename)
 
     ofstream f;
     f.open(filename.c_str());
-    f << fixed;
+    f << std::fixed;
 
     // Frame pose is stored relative to its reference keyframe (which is optimized by BA and pose graph).
     // We need to get first the keyframe pose and then concatenate the relative transformation.
@@ -398,7 +398,7 @@ void System::SaveKeyFrameTrajectoryTUM(const std::string &filename)
 
     ofstream f;
     f.open(filename.c_str());
-    f << fixed;
+    f << std::fixed;
 
     for(size_t i=0; i<vpKFs.size(); i++)
     {
@@ -439,7 +439,7 @@ void System::SaveTrajectoryKITTI(const std::string &filename)
 
     ofstream f;
     f.open(filename.c_str());
-    f << fixed;
+    f << std::fixed;
 
     // Frame pose is stored relative to its reference keyframe (which is optimized by BA and pose graph).
     // We need to get first the keyframe pose and then concatenate the relative transformation.

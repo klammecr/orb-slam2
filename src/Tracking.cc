@@ -1232,7 +1232,7 @@ void Tracking::UpdateLocalPoints()
 void Tracking::UpdateLocalKeyFrames()
 {
     // Each map point vote for the keyframes in which it has been observed
-    map<KeyFrame*,int> keyframeCounter;
+    std::map<KeyFrame*,int> keyframeCounter;
     for(int i=0; i<mCurrentFrame.N; i++)
     {
         if(mCurrentFrame.mvpMapPoints[i])
@@ -1240,8 +1240,8 @@ void Tracking::UpdateLocalKeyFrames()
             MapPoint* pMP = mCurrentFrame.mvpMapPoints[i];
             if(!pMP->isBad())
             {
-                const map<KeyFrame*,size_t> observations = pMP->GetObservations();
-                for(map<KeyFrame*,size_t>::const_iterator it=observations.begin(), itend=observations.end(); it!=itend; it++)
+                const std::map<KeyFrame*,size_t> observations = pMP->GetObservations();
+                for(std::map<KeyFrame*,size_t>::const_iterator it=observations.begin(), itend=observations.end(); it!=itend; it++)
                     keyframeCounter[it->first]++;
             }
             else
@@ -1261,7 +1261,7 @@ void Tracking::UpdateLocalKeyFrames()
     mvpLocalKeyFrames.reserve(3*keyframeCounter.size());
 
     // All keyframes that observe a map point are included in the local map. Also check which keyframe shares most points
-    for(map<KeyFrame*,int>::const_iterator it=keyframeCounter.begin(), itEnd=keyframeCounter.end(); it!=itEnd; it++)
+    for(std::map<KeyFrame*,int>::const_iterator it=keyframeCounter.begin(), itEnd=keyframeCounter.end(); it!=itEnd; it++)
     {
         KeyFrame* pKF = it->first;
 
