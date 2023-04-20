@@ -898,7 +898,7 @@ int Initializer::CheckRT(const cv::Mat &R, const cv::Mat &t, const std::vector<c
     {
         sort(vCosParallax.begin(),vCosParallax.end());
 
-        size_t idx = min(50,int(vCosParallax.size()-1));
+        size_t idx = std::min(50,int(vCosParallax.size()-1));
         parallax = acos(vCosParallax[idx])*180/CV_PI;
     }
     else
