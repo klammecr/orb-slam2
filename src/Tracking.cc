@@ -44,7 +44,7 @@
 namespace ORB_SLAM2
 {
 
-Tracking::Tracking(System *pSys, ORBVocabulary* pVoc, FrameDrawer *pFrameDrawer, MapDrawer *pMapDrawer, Map *pMap, KeyFrameDatabase* pKFDB, const string &strSettingPath, const int sensor):
+Tracking::Tracking(System *pSys, ORBVocabulary* pVoc, FrameDrawer *pFrameDrawer, MapDrawer *pMapDrawer, Map *pMap, KeyFrameDatabase* pKFDB, const std::string &strSettingPath, const int sensor):
     mState(NO_IMAGES_YET), mSensor(sensor), mbOnlyTracking(false), mbVO(false), mpORBVocabulary(pVoc),
     mpKeyFrameDB(pKFDB), mpInitializer(static_cast<Initializer*>(NULL)), mpSystem(pSys), mpViewer(NULL),
     mpFrameDrawer(pFrameDrawer), mpMapDrawer(pMapDrawer), mpMap(pMap), mnLastRelocFrameId(0)
@@ -274,8 +274,8 @@ void Tracking::Track()
 
     mLastProcessedState=mState;
 
-    // Get Map Mutex -> Map cannot be changed
-    unique_lock<mutex> lock(mpMap->mMutexMapUpdate);
+    // Get Map std::mutex -> Map cannot be changed
+    std::unique_lock<std::mutex> lock(mpMap->mstd::mutexMapUpdate);
 
     if(mState==NOT_INITIALIZED)
     {
@@ -1550,7 +1550,7 @@ void Tracking::Reset()
         mpViewer->Release();
 }
 
-void Tracking::ChangeCalibration(const string &strSettingPath)
+void Tracking::ChangeCalibration(const std::string &strSettingPath)
 {
     cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
     float fx = fSettings["Camera.fx"];
