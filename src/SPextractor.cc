@@ -137,7 +137,7 @@ SPextractor::SPextractor(int _nfeatures, float _scaleFactor, int _nlevels,
     nfeatures(_nfeatures), scaleFactor(_scaleFactor), nlevels(_nlevels),
     iniThFAST(_iniThFAST), minThFAST(_minThFAST)
 {
-    model = make_shared<SuperPoint>();
+    model = std::make_shared<SuperPoint>();
     torch::load(model, "superpoint.pt");
 
 
@@ -509,7 +509,7 @@ void SPextractor::ComputeKeyPointsOctTree(std::vector<std::vector<KeyPoint> >& a
 
 
 void SPextractor::operator()( InputArray _image, InputArray _mask, std::vector<KeyPoint>& _keypoints,
-                      OutputArray _descriptors)
+                      cv::OutputArray _descriptors)
 { 
     if(_image.empty())
         return;
@@ -610,8 +610,8 @@ void SPextractor::ComputePyramid(cv::Mat image)
     for (int level = 0; level < nlevels; ++level)
     {
         float scale = mvInvScaleFactor[level];
-        Size sz(cvRound((float)image.cols*scale), cvRound((float)image.rows*scale));
-        Size wholeSize(sz.width + EDGE_THRESHOLD*2, sz.height + EDGE_THRESHOLD*2);
+        cv::Size sz(cvRound((float)image.cols*scale), cvRound((float)image.rows*scale));
+        cv::Size wholeSize(sz.width + EDGE_THRESHOLD*2, sz.height + EDGE_THRESHOLD*2);
         cv::Mat temp(wholeSize, image.type()), masktemp;
         mvImagePyramid[level] = temp(cv::Rect(EDGE_THRESHOLD, EDGE_THRESHOLD, sz.width, sz.height));
 
