@@ -177,7 +177,7 @@ SPextractor::SPextractor(int _nfeatures, float _scaleFactor, int _nlevels,
 }
 
 
-vector<cv::KeyPoint> SPextractor::DistributeOctTree(const vector<cv::KeyPoint>& vToDistributeKeys, const int &minX,
+std::vector<cv::KeyPoint> SPextractor::DistributeOctTree(const std::vector<cv::KeyPoint>& vToDistributeKeys, const int &minX,
                                        const int &maxX, const int &minY, const int &maxY, const int &N, const int &level)
 {
     // Compute how many initial nodes   
@@ -185,9 +185,9 @@ vector<cv::KeyPoint> SPextractor::DistributeOctTree(const vector<cv::KeyPoint>& 
 
     const float hX = static_cast<float>(maxX-minX)/nIni;
 
-    list<ExtractorNode> lNodes;
+    std::list<ExtractorNode> lNodes;
 
-    vector<ExtractorNode*> vpIniNodes;
+    std::vector<ExtractorNode*> vpIniNodes;
     vpIniNodes.resize(nIni);
 
     for(int i=0; i<nIni; i++)
@@ -210,7 +210,7 @@ vector<cv::KeyPoint> SPextractor::DistributeOctTree(const vector<cv::KeyPoint>& 
         vpIniNodes[kp.pt.x/hX]->vKeys.push_back(kp);
     }
 
-    list<ExtractorNode>::iterator lit = lNodes.begin();
+    std::list<ExtractorNode>::iterator lit = lNodes.begin();
 
     while(lit!=lNodes.end())
     {
@@ -229,7 +229,7 @@ vector<cv::KeyPoint> SPextractor::DistributeOctTree(const vector<cv::KeyPoint>& 
 
     int iteration = 0;
 
-    vector<pair<int,ExtractorNode*> > vSizeAndPointerToNode;
+    std::vector<pair<int,ExtractorNode*> > vSizeAndPointerToNode;
     vSizeAndPointerToNode.reserve(lNodes.size()*4);
 
     while(!bFinish)
@@ -319,7 +319,7 @@ vector<cv::KeyPoint> SPextractor::DistributeOctTree(const vector<cv::KeyPoint>& 
 
                 prevSize = lNodes.size();
 
-                vector<pair<int,ExtractorNode*> > vPrevSizeAndPointerToNode = vSizeAndPointerToNode;
+                std::vector<pair<int,ExtractorNode*> > vPrevSizeAndPointerToNode = vSizeAndPointerToNode;
                 vSizeAndPointerToNode.clear();
 
                 sort(vPrevSizeAndPointerToNode.begin(),vPrevSizeAndPointerToNode.end());
@@ -380,11 +380,11 @@ vector<cv::KeyPoint> SPextractor::DistributeOctTree(const vector<cv::KeyPoint>& 
     }
 
     // Retain the best point in each node
-    vector<cv::KeyPoint> vResultKeys;
+    std::vector<cv::KeyPoint> vResultKeys;
     vResultKeys.reserve(nfeatures);
-    for(list<ExtractorNode>::iterator lit=lNodes.begin(); lit!=lNodes.end(); lit++)
+    for(std::list<ExtractorNode>::iterator lit=lNodes.begin(); lit!=lNodes.end(); lit++)
     {
-        vector<cv::KeyPoint> &vNodeKeys = lit->vKeys;
+        std::vector<cv::KeyPoint> &vNodeKeys = lit->vKeys;
         cv::KeyPoint* pKP = &vNodeKeys[0];
         float maxResponse = pKP->response;
 
@@ -404,11 +404,11 @@ vector<cv::KeyPoint> SPextractor::DistributeOctTree(const vector<cv::KeyPoint>& 
 }
 
 
-void SPextractor::ComputeKeyPointsOctTree(vector<vector<KeyPoint> >& allKeypoints, cv::Mat &_desc)
+void SPextractor::ComputeKeyPointsOctTree(std::vector<std::vector<KeyPoint> >& allKeypoints, cv::Mat &_desc)
 {
     allKeypoints.resize(nlevels);
 
-    vector<cv::Mat> vDesc;
+    std::vector<cv::Mat> vDesc;
 
     const float W = 30;
 
@@ -422,7 +422,7 @@ void SPextractor::ComputeKeyPointsOctTree(vector<vector<KeyPoint> >& allKeypoint
         const int maxBorderX = mvImagePyramid[level].cols-EDGE_THRESHOLD+3;
         const int maxBorderY = mvImagePyramid[level].rows-EDGE_THRESHOLD+3;
 
-        vector<cv::KeyPoint> vToDistributeKeys;
+        std::vector<cv::KeyPoint> vToDistributeKeys;
         vToDistributeKeys.reserve(nfeatures*10);
 
         const float width = (maxBorderX-minBorderX);
@@ -452,7 +452,7 @@ void SPextractor::ComputeKeyPointsOctTree(vector<vector<KeyPoint> >& allKeypoint
                 if(maxX>maxBorderX)
                     maxX = maxBorderX;
 
-                vector<cv::KeyPoint> vKeysCell;
+                std::vector<cv::KeyPoint> vKeysCell;
                 // FAST(mvImagePyramid[level].rowRange(iniY,maxY).colRange(iniX,maxX),
                 //      vKeysCell,iniThFAST,true);
                 detector.getKeyPoints(iniThFAST, iniX, maxX, iniY, maxY, vKeysCell, true);
@@ -466,7 +466,7 @@ void SPextractor::ComputeKeyPointsOctTree(vector<vector<KeyPoint> >& allKeypoint
 
                 if(!vKeysCell.empty())
                 {
-                    for(vector<cv::KeyPoint>::iterator vit=vKeysCell.begin(); vit!=vKeysCell.end();vit++)
+                    for(std::vector<cv::KeyPoint>::iterator vit=vKeysCell.begin(); vit!=vKeysCell.end();vit++)
                     {
                         (*vit).pt.x+=j*wCell;
                         (*vit).pt.y+=i*hCell;
@@ -477,7 +477,7 @@ void SPextractor::ComputeKeyPointsOctTree(vector<vector<KeyPoint> >& allKeypoint
             }
         }
 
-        vector<KeyPoint> & keypoints = allKeypoints[level];
+        std::vector<KeyPoint> & keypoints = allKeypoints[level];
         keypoints.reserve(nfeatures);
 
         keypoints = DistributeOctTree(vToDistributeKeys, minBorderX, maxBorderX,
@@ -508,7 +508,7 @@ void SPextractor::ComputeKeyPointsOctTree(vector<vector<KeyPoint> >& allKeypoint
 }
 
 
-void SPextractor::operator()( InputArray _image, InputArray _mask, vector<KeyPoint>& _keypoints,
+void SPextractor::operator()( InputArray _image, InputArray _mask, std::vector<KeyPoint>& _keypoints,
                       OutputArray _descriptors)
 { 
     if(_image.empty())
@@ -522,7 +522,7 @@ void SPextractor::operator()( InputArray _image, InputArray _mask, vector<KeyPoi
     // Pre-compute the scale pyramid
     ComputePyramid(image);
 
-    vector < vector<KeyPoint> > allKeypoints;
+    vector < std::vector<KeyPoint> > allKeypoints;
     ComputeKeyPointsOctTree(allKeypoints, descriptors);
     cout << descriptors.rows << endl;
 
@@ -544,7 +544,7 @@ void SPextractor::operator()( InputArray _image, InputArray _mask, vector<KeyPoi
     int offset = 0;
     for (int level = 0; level < nlevels; ++level)
     {
-        vector<KeyPoint>& keypoints = allKeypoints[level];
+        std::vector<KeyPoint>& keypoints = allKeypoints[level];
         int nkeypointsLevel = (int)keypoints.size();
 
         if(nkeypointsLevel==0)
@@ -564,7 +564,7 @@ void SPextractor::operator()( InputArray _image, InputArray _mask, vector<KeyPoi
         if (level != 0)
         {
             float scale = mvScaleFactor[level]; //getScale(level, firstLevel, scaleFactor);
-            for (vector<KeyPoint>::iterator keypoint = keypoints.begin(),
+            for (std::vector<KeyPoint>::iterator keypoint = keypoints.begin(),
                  keypointEnd = keypoints.end(); keypoint != keypointEnd; ++keypoint)
                 keypoint->pt *= scale;
         }
@@ -573,7 +573,7 @@ void SPextractor::operator()( InputArray _image, InputArray _mask, vector<KeyPoi
     }
 }
 
-// void SPextractor::operator()( InputArray _image, InputArray _mask, vector<KeyPoint>& _keypoints,
+// void SPextractor::operator()( InputArray _image, InputArray _mask, std::vector<KeyPoint>& _keypoints,
 //                       OutputArray _descriptors)
 // { 
 //     if(_image.empty())
@@ -582,7 +582,7 @@ void SPextractor::operator()( InputArray _image, InputArray _mask, vector<KeyPoi
 //     Mat image = _image.getMat();
 //     assert(image.type() == CV_8UC1 );
 
-//     vector<KeyPoint> keypoints;
+//     std::vector<KeyPoint> keypoints;
 
 //     Mat desc = SPdetect(model, image, _keypoints, iniThFAST, true, false);
 

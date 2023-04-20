@@ -242,7 +242,7 @@ float MapPoint::GetFoundRatio()
 void MapPoint::ComputeDistinctiveDescriptors()
 {
     // Retrieve all observed descriptors
-    vector<cv::Mat> vDescriptors;
+    std::vector<cv::Mat> vDescriptors;
 
     map<KeyFrame*,size_t> observations;
 
@@ -289,7 +289,7 @@ void MapPoint::ComputeDistinctiveDescriptors()
     int BestIdx = 0;
     for(size_t i=0;i<N;i++)
     {
-        vector<int> vDists(Distances[i],Distances[i]+N);
+        std::vector<int> vDists(Distances[i],Distances[i]+N);
         sort(vDists.begin(),vDists.end());
         int median = vDists[0.5*(N-1)];
 
