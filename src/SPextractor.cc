@@ -524,7 +524,7 @@ void SPextractor::operator()( InputArray _image, InputArray _mask, std::vector<K
 
     vector < std::vector<KeyPoint> > allKeypoints;
     ComputeKeyPointsOctTree(allKeypoints, descriptors);
-    cout << descriptors.rows << endl;
+    std::cout << descriptors.rows << std::endl;
 
 
     int nkeypoints = 0;
@@ -597,7 +597,7 @@ void SPextractor::operator()( InputArray _image, InputArray _mask, std::vector<K
 //     // int height = image.rows;
 //     // int width = image.cols;
 //     // nms(kpt_mat, desc, _keypoints, descriptors, border, dist_thresh, width, height);
-//     // cout << "hihihi" << endl;
+//     // std::cout << "hihihi" << std::endl;
 
 //     int nkeypoints = _keypoints.size();
 //     _descriptors.create(nkeypoints, 256, CV_32F);
