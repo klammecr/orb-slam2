@@ -68,15 +68,15 @@ void Timestamp::setToCurrentTime(){
 
 }
 
-void Timestamp::setTime(const string &stime){
-	string::size_type p = stime.find('.');
-	if(p == string::npos){
+void Timestamp::setTime(const std::string &stime){
+	std::string::size_type p = stime.find('.');
+	if(p == std::string::npos){
 		m_secs = atol(stime.c_str());
 		m_usecs = 0;
 	}else{
 		m_secs = atol(stime.substr(0, p).c_str());
 		
-		string s_usecs = stime.substr(p+1, 6);
+		std::string s_usecs = stime.substr(p+1, 6);
 		m_usecs = atol(stime.substr(p+1).c_str());
 		m_usecs *= (unsigned long)pow(10.0, double(6 - s_usecs.length()));
 	}
@@ -92,10 +92,10 @@ double Timestamp::getFloatTime() const {
 	return double(m_secs) + double(m_usecs)/1000000.0;
 }
 
-string Timestamp::getStringTime() const {
+std::string Timestamp::getstd::stringTime() const {
 	char buf[32];
 	sprintf(buf, "%.6lf", this->getFloatTime());
-	return string(buf);
+	return std::string(buf);
 }
 
 double Timestamp::operator- (const Timestamp &t) const {
@@ -192,7 +192,7 @@ bool Timestamp::operator== (const Timestamp &t) const
 }
 
 
-string Timestamp::Format(bool machine_friendly) const 
+std::string Timestamp::Format(bool machine_friendly) const 
 {
   struct tm tm_time;
 
@@ -215,10 +215,10 @@ string Timestamp::Format(bool machine_friendly) const
     strftime(buffer, 128, "%c", &tm_time); // Thu Aug 23 14:55:02 2001
   }
   
-  return string(buffer);
+  return std::string(buffer);
 }
 
-string Timestamp::Format(double s) {
+std::string Timestamp::Format(double s) {
 	int days = int(s / (24. * 3600.0));
 	s -= days * (24. * 3600.0);
 	int hours = int(s / 3600.0);
@@ -228,7 +228,7 @@ string Timestamp::Format(double s) {
 	int seconds = int(s);
 	int ms = int((s - seconds)*1e6);
 
-	stringstream ss;
+	std::stringstream ss;
 	ss.fill('0');
 	bool b;
 	if((b = (days > 0))) ss << days << "d ";
