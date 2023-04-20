@@ -275,7 +275,7 @@ void Tracking::Track()
     mLastProcessedState=mState;
 
     // Get Map std::mutex -> Map cannot be changed
-    std::unique_lock<std::mutex> lock(mpMap->mutexMapUpdate);
+    std::unique_lock<std::mutex> lock(mpMap->mMutexMapUpdate);
 
     if(mState==NOT_INITIALIZED)
     {
