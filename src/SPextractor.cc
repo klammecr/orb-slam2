@@ -75,8 +75,8 @@ const float factorPI = (float)(CV_PI/180.f);
 
 void ExtractorNode::DivideNode(ExtractorNode &n1, ExtractorNode &n2, ExtractorNode &n3, ExtractorNode &n4)
 {
-    const int halfX = ceil(static_cast<float>(UR.x-UL.x)/2);
-    const int halfY = ceil(static_cast<float>(BR.y-UL.y)/2);
+    const int halfX = std::ceil(static_cast<float>(UR.x-UL.x)/2);
+    const int halfY = std::ceil(static_cast<float>(BR.y-UL.y)/2);
 
     //Define boundaries of childs
     n1.UL = UL;
@@ -430,8 +430,8 @@ void SPextractor::ComputeKeyPointsOctTree(std::vector<std::vector<cv::KeyPoint> 
 
         const int nCols = width/W;
         const int nRows = height/W;
-        const int wCell = ceil(width/nCols);
-        const int hCell = ceil(height/nRows);
+        const int wCell = std::ceil(width/nCols);
+        const int hCell = std::ceil(height/nRows);
 
         for(int i=0; i<nRows; i++)
         {

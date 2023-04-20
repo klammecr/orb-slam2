@@ -497,12 +497,12 @@ bool Initializer::ReconstructF(std::vector<bool> &vbMatchesInliers, cv::Mat &F21
     int nGood3 = CheckRT(R1,t2,mvKeys1,mvKeys2,mvMatches12,vbMatchesInliers,K, vP3D3, 4.0*mSigma2, vbTriangulated3, parallax3);
     int nGood4 = CheckRT(R2,t2,mvKeys1,mvKeys2,mvMatches12,vbMatchesInliers,K, vP3D4, 4.0*mSigma2, vbTriangulated4, parallax4);
 
-    int maxGood = max(nGood1,max(nGood2,max(nGood3,nGood4)));
+    int maxGood = std::max(nGood1,std::max(nGood2,std::max(nGood3,nGood4)));
 
     R21 = cv::Mat();
     t21 = cv::Mat();
 
-    int nMinGood = max(static_cast<int>(0.9*N),minTriangulated);
+    int nMinGood = std::max(static_cast<int>(0.9*N),minTriangulated);
 
     int nsimilar = 0;
     if(nGood1>0.7*maxGood)

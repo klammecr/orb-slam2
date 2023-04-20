@@ -575,7 +575,7 @@ std::vector<size_t> KeyFrame::GetFeaturesInArea(const float &x, const float &y, 
     if(nMinCellX>=mnGridCols)
         return vIndices;
 
-    const int nMaxCellX = std::min((int)mnGridCols-1,(int)ceil((x-mnMinX+r)*mfGridElementWidthInv));
+    const int nMaxCellX = std::min((int)mnGridCols-1,(int)std::ceil((x-mnMinX+r)*mfGridElementWidthInv));
     if(nMaxCellX<0)
         return vIndices;
 
@@ -583,7 +583,7 @@ std::vector<size_t> KeyFrame::GetFeaturesInArea(const float &x, const float &y, 
     if(nMinCellY>=mnGridRows)
         return vIndices;
 
-    const int nMaxCellY = std::min((int)mnGridRows-1,(int)ceil((y-mnMinY+r)*mfGridElementHeightInv));
+    const int nMaxCellY = std::min((int)mnGridRows-1,(int)std::ceil((y-mnMinY+r)*mfGridElementHeightInv));
     if(nMaxCellY<0)
         return vIndices;
 

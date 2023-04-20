@@ -145,7 +145,7 @@ void PnPsolver::SetRansacParameters(double probability, int minInliers, int maxI
     if(mRansacMinInliers==N)
         nIterations=1;
     else
-        nIterations = ceil(log(1-mRansacProb)/log(1-pow(mRansacEpsilon,3)));
+        nIterations = std::ceil(std::log(1-mRansacProb)/std::log(1-std::pow(mRansacEpsilon,3)));
 
     mRansacMaxIts = std::max(1,std::min(nIterations,mRansacMaxIts));
 

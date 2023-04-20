@@ -78,7 +78,7 @@ void Timestamp::setTime(const std::string &stime){
 		
 		std::string s_usecs = stime.substr(p+1, 6);
 		m_usecs = atol(stime.substr(p+1).c_str());
-		m_usecs *= (unsigned long)pow(10.0, double(6 - s_usecs.length()));
+		m_usecs *= (unsigned long)std::pow(10.0, double(6 - s_usecs.length()));
 	}
 }
 

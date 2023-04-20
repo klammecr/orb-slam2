@@ -390,7 +390,7 @@ int MapPoint::PredictScale(const float &currentDist, KeyFrame* pKF)
         ratio = mfMaxDistance/currentDist;
     }
 
-    int nScale = ceil(log(ratio)/pKF->mfLogScaleFactor);
+    int nScale = std::ceil(std::log(ratio)/pKF->mfLogScaleFactor);
     if(nScale<0)
         nScale = 0;
     else if(nScale>=pKF->mnScaleLevels)
@@ -407,7 +407,7 @@ int MapPoint::PredictScale(const float &currentDist, Frame* pF)
         ratio = mfMaxDistance/currentDist;
     }
 
-    int nScale = ceil(log(ratio)/pF->mfLogScaleFactor);
+    int nScale = std::ceil(std::log(ratio)/pF->mfLogScaleFactor);
     if(nScale<0)
         nScale = 0;
     else if(nScale>=pF->mnScaleLevels)
