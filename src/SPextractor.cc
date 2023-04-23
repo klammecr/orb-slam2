@@ -137,8 +137,15 @@ SPextractor::SPextractor(int _nfeatures, float _scaleFactor, int _nlevels,
     nfeatures(_nfeatures), scaleFactor(_scaleFactor), nlevels(_nlevels),
     iniThFAST(_iniThFAST), minThFAST(_minThFAST)
 {
-    model = std::make_shared<SuperPoint>();
-    torch::load(model, "superpoint.pt");
+    torch::jit::script::Module model;
+    try
+    {
+        model = torch::jit::load( "superpoint.pt");
+    }
+    catch (const c10::Error & e)
+    {
+        std::cerr << "Could not load Superpoint\n";
+    }
 
 
     mvScaleFactor.resize(nlevels);

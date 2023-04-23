@@ -103,7 +103,7 @@ void NMS(cv::Mat det, cv::Mat conf, cv::Mat desc, std::vector<cv::KeyPoint>& pts
 void NMS2(std::vector<cv::KeyPoint> det, cv::Mat conf, std::vector<cv::KeyPoint>& pts,
             int border, int dist_thresh, int img_width, int img_height);
 
-cv::Mat SPdetect(std::shared_ptr<SuperPoint> model, cv::Mat img, std::vector<cv::KeyPoint> &keypoints, double threshold, bool nms, bool cuda)
+cv::Mat SPdetect(torch::jit::script::Module model, cv::Mat img, std::vector<cv::KeyPoint> &keypoints, double threshold, bool nms, bool cuda)
 {
     auto x = torch::from_blob(img.clone().data, {1, 1, img.rows, img.cols}, torch::kByte);
     x = x.to(torch::kFloat) / 255;
@@ -116,9 +116,15 @@ cv::Mat SPdetect(std::shared_ptr<SuperPoint> model, cv::Mat img, std::vector<cv:
         device_type = torch::kCPU;
     torch::Device device(device_type);
 
-    model->to(device);
+    model.to(device);
     x = x.set_requires_grad(false);
-    auto out = model->forward(x.to(device));
+
+    // Create vector of inputs
+    std::vector<torch::jit::IValue> inputs;
+    inputs.push_back(x.to(device));
+
+    // Perform inference
+    auto out = model.forward(inputs).toTensor();
     auto prob = out[0].squeeze(0);  // [H, W]
     auto desc = out[1];             // [1, 256, H/8, W/8]
 
@@ -183,27 +189,48 @@ cv::Mat SPdetect(std::shared_ptr<SuperPoint> model, cv::Mat img, std::vector<cv:
 }
 
 
-SPDetector::SPDetector(std::shared_ptr<SuperPoint> _model) : model(_model) 
+SPDetector::SPDetector(torch::jit::script::Module _model) : model(_model) 
 {
 }
 
 void SPDetector::detect(cv::Mat &img, bool cuda)
 {
-    auto x = torch::from_blob(img.clone().data, {1, 1, img.rows, img.cols}, torch::kByte);
-    x = x.to(torch::kFloat) / 255;
+    torch::Tensor img_tensor = torch::zeros({1, 1, img.rows, img.cols});
+    if (img.type() == CV_8UC1)
+    {
+        auto x = torch::from_blob(img.clone().data, {1, 1, img.rows, img.cols}, torch::kByte);
+        img_tensor = torch::cat({x, x, x});
+    }
+    else if (img.type() == CV_8UC3)
+    {
+        img_tensor = torch::from_blob(img.clone().data, {1, 3, img.rows, img.cols}, torch::kByte);
+    }
+
+    // Normalize
+    img_tensor = img_tensor.to(torch::kFloat) / 255;
 
     bool use_cuda = cuda && torch::cuda::is_available();
-    std::cout >> "Using CUDA?: " >> use_cuda >> std::endl;
+    std::cout << "Using CUDA?: " << use_cuda << std::endl;
     torch::DeviceType device_type;
     if (use_cuda)
         device_type = torch::kCUDA;
     else
         device_type = torch::kCPU;
-    torch::Device device(device_type);
 
-    model->to(device);
-    x = x.set_requires_grad(false);
-    auto out = model->forward(x.to(device));
+    // Move to correct device
+    std::cout << "Moving to Device" << std::endl;
+    torch::Device device(device_type);
+    //model.to(device);
+    img_tensor = img_tensor.set_requires_grad(false);
+
+    // Create vector of inputs
+    std::cout << "Performing Inference..." << std::endl;
+    std::vector<torch::jit::IValue> inputs;
+    std::cout << "Adding tensor to IValue Vector" << std::endl;
+    //inputs.push_back(img_tensor.to(device));
+    inputs.push_back(torch::ones({1, 3, 224, 224}));
+    auto out = model.forward(inputs).toTensor();
+    std::cout << "Complete with Forward..." << std::endl;
 
     mProb = out[0].squeeze(0);  // [H, W]
     mDesc = out[1];             // [1, 256, H/8, W/8]

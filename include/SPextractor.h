@@ -116,7 +116,7 @@ protected:
     std::vector<float> mvLevelSigma2;
     std::vector<float> mvInvLevelSigma2;
 
-    std::shared_ptr<SuperPoint> model;
+    torch::jit::script::Module model;
 };
 
 typedef SPextractor ORBextractor;

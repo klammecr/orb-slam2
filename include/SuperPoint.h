@@ -3,6 +3,7 @@
 
 
 #include <torch/torch.h>
+#include <torch/script.h>
 #include <opencv2/opencv.hpp>
 
 #include <vector>
@@ -43,18 +44,18 @@ struct SuperPoint : torch::nn::Module {
 };
 
 
-cv::Mat SPdetect(std::shared_ptr<SuperPoint> model, cv::Mat img, std::vector<cv::KeyPoint> &keypoints, double threshold, bool nms, bool cuda);
+cv::Mat SPdetect(torch::jit::script::Module model, cv::Mat img, std::vector<cv::KeyPoint> &keypoints, double threshold, bool nms, bool cuda);
 // torch::Tensor NMS(torch::Tensor kpts);
 
 class SPDetector {
 public:
-    SPDetector(std::shared_ptr<SuperPoint> _model);
+    SPDetector(torch::jit::script::Module _model);
     void detect(cv::Mat &image, bool cuda);
     void getKeyPoints(float threshold, int iniX, int maxX, int iniY, int maxY, std::vector<cv::KeyPoint> &keypoints, bool nms);
     void computeDescriptors(const std::vector<cv::KeyPoint> &keypoints, cv::Mat &descriptors);
 
 private:
-    std::shared_ptr<SuperPoint> model;
+    torch::jit::script::Module model;
     torch::Tensor mProb;
     torch::Tensor mDesc;
 };
