@@ -146,6 +146,7 @@ SPextractor::SPextractor(int _nfeatures, float _scaleFactor, int _nlevels,
     {
         std::cerr << "Could not load Superpoint\n";
     }
+    std::cout << "Success Loading Superpoint" << std::endl;
 
 
     mvScaleFactor.resize(nlevels);

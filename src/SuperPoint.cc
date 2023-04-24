@@ -103,7 +103,7 @@ void NMS(cv::Mat det, cv::Mat conf, cv::Mat desc, std::vector<cv::KeyPoint>& pts
 void NMS2(std::vector<cv::KeyPoint> det, cv::Mat conf, std::vector<cv::KeyPoint>& pts,
             int border, int dist_thresh, int img_width, int img_height);
 
-cv::Mat SPdetect(torch::jit::script::Module model, cv::Mat img, std::vector<cv::KeyPoint> &keypoints, double threshold, bool nms, bool cuda)
+cv::Mat SPdetect(torch::jit::script::Module &model, cv::Mat img, std::vector<cv::KeyPoint> &keypoints, double threshold, bool nms, bool cuda)
 {
     auto x = torch::from_blob(img.clone().data, {1, 1, img.rows, img.cols}, torch::kByte);
     x = x.to(torch::kFloat) / 255;
@@ -229,6 +229,7 @@ void SPDetector::detect(cv::Mat &img, bool cuda)
     std::cout << "Adding tensor to IValue Vector" << std::endl;
     //inputs.push_back(img_tensor.to(device));
     inputs.push_back(torch::ones({1, 3, 224, 224}));
+    std::cout << "Added Elements" << std::endl;
     auto out = model.forward(inputs).toTensor();
     std::cout << "Complete with Forward..." << std::endl;
 
