@@ -623,6 +623,8 @@ void Tracking::MonocularInitialization()
                 }
             }
 
+            std::cout << "Numver of Matches After" << std::endl;
+            
             // Set Frame Poses
             mInitialFrame.SetPose(cv::Mat::eye(4,4,CV_32F));
             cv::Mat Tcw = cv::Mat::eye(4,4,CV_32F);
