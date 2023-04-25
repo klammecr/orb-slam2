@@ -367,7 +367,7 @@ int SPmatcher::SearchByBoW(KeyFrame* pKF,Frame &F, std::vector<MapPoint*> &vpMap
 
                         const cv::KeyPoint &kp = pKF->mvKeysUn[realIdxKF];
 
-                        if(false)
+                        if(mbCheckOrientation)
                         {
                             float rot = kp.angle-F.mvKeys[bestIdxF].angle;
                             if(rot<0.0)

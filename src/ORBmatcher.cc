@@ -29,6 +29,8 @@
 
 #include<stdint-gcc.h>
 
+#include <opencv2/features2d.hpp>
+
 using namespace std;
 
 namespace ORB_SLAM2
@@ -136,6 +138,145 @@ float ORBmatcher::RadiusByViewingCos(const float &viewCos)
         return 4.0;
 }
 
+
+
+
+int ORBmatcher::SearchByNN(Frame &F, const vector<MapPoint*> &vpMapPoints)
+{
+    // std::cout << "Matching Localmap" << std::endl;
+    // std::cout << vpMapPoints.size() << std::endl;
+    // std::cout << F.mDescriptors.rows << std::endl;
+
+    std::vector<cv::Mat> MPdescriptorAll;
+    std::vector<int> select_indice;
+    for(size_t iMP=0; iMP<vpMapPoints.size(); iMP++)
+    {
+        MapPoint* pMP = vpMapPoints[iMP];
+
+        if(!pMP)
+            continue;
+
+        if(!pMP->mbTrackInView)
+            continue;
+
+        if(pMP->isBad())
+            continue;
+
+        const cv::Mat MPdescriptor = pMP->GetDescriptor();
+        MPdescriptorAll.push_back(MPdescriptor);
+        select_indice.push_back(iMP);
+    }
+
+    cv::Mat MPdescriptors;
+    MPdescriptors.create(MPdescriptorAll.size(), 32, CV_8U);
+
+    for (int i=0; i<static_cast<int>(MPdescriptorAll.size()); i++)
+    {
+        for (int j=0; j<32; j++)
+        {
+            MPdescriptors.at<unsigned char>(i, j) = MPdescriptorAll[i].at<unsigned char>(j);
+        }
+    }
+
+    std::vector<cv::DMatch> matches;
+    cv::BFMatcher desc_matcher(cv::NORM_HAMMING, true);
+    desc_matcher.match(MPdescriptors, F.mDescriptors, matches, cv::Mat());
+
+    int nmatches =0;
+    for (int i = 0; i < static_cast<int>(matches.size()); ++i) {
+        int realIdxMap = select_indice[matches[i].queryIdx];
+        int bestIdxF  = matches[i].trainIdx;
+        
+        if(matches[i].distance > TH_HIGH)
+            continue;
+
+        if(F.mvpMapPoints[bestIdxF])
+            if(F.mvpMapPoints[bestIdxF]->Observations()>0)
+                continue;
+
+        MapPoint* pMP = vpMapPoints[realIdxMap];
+        F.mvpMapPoints[bestIdxF] = pMP;
+        nmatches++;
+    }
+
+    // std::cout << MPdescriptors.rows << std::endl;
+    // std::cout << nmatches << std::endl;
+
+    return nmatches;
+}
+
+
+int ORBmatcher::SearchByNN(KeyFrame *pKF, Frame &F, std::vector<MapPoint*> &vpMapPointMatches)
+{
+
+    // std::cout << "Matching KeyFrame" << std::endl;
+    // std::cout << pKF->mDescriptors.rows << std::endl;
+    // std::cout << F.mDescriptors.rows << std::endl;
+
+    const vector<MapPoint*> vpMapPointsKF = pKF->GetMapPointMatches();
+    vpMapPointMatches = vector<MapPoint*>(F.N,static_cast<MapPoint*>(NULL));
+
+    std::vector<cv::DMatch> matches;
+    cv::BFMatcher desc_matcher(cv::NORM_HAMMING, true);
+    desc_matcher.match(pKF->mDescriptors, F.mDescriptors, matches, cv::Mat());
+
+    int nmatches =0;
+    for (int i = 0; i < static_cast<int>(matches.size()); ++i) {
+        int realIdxKF = matches[i].queryIdx;
+        int bestIdxF  = matches[i].trainIdx;
+
+        if(matches[i].distance > TH_HIGH)
+            continue;
+
+        MapPoint* pMP = vpMapPointsKF[realIdxKF];
+
+        if(!pMP)
+            continue;
+
+        if(pMP->isBad())
+            continue;  
+        
+        vpMapPointMatches[bestIdxF]=pMP;
+        nmatches++;
+    }
+    // std::cout << nmatches << std::endl;
+
+    return nmatches;
+
+}
+
+
+int ORBmatcher::SearchByNN(Frame &CurrentFrame, const Frame &LastFrame)
+{
+
+    std::vector<cv::DMatch> matches;
+    cv::BFMatcher desc_matcher(cv::NORM_HAMMING, true);
+    desc_matcher.match(LastFrame.mDescriptors, CurrentFrame.mDescriptors, matches, cv::Mat());
+
+    int nmatches =0;
+    for (int i = 0; i < static_cast<int>(matches.size()); ++i) {
+        int realIdxKF = matches[i].queryIdx;
+        int bestIdxF  = matches[i].trainIdx;
+
+        if(matches[i].distance > TH_LOW)
+            continue;
+
+        MapPoint* pMP = LastFrame.mvpMapPoints[realIdxKF];
+        if(!pMP)
+            continue;
+
+        if(pMP->isBad())
+            continue;
+
+        if(!LastFrame.mvbOutlier[realIdxKF])
+        
+        CurrentFrame.mvpMapPoints[bestIdxF]=pMP;
+        nmatches++;
+    }
+
+    return nmatches;
+
+}
 
 bool ORBmatcher::CheckDistEpipolarLine(const cv::KeyPoint &kp1,const cv::KeyPoint &kp2,const cv::Mat &F12,const KeyFrame* pKF2)
 {
