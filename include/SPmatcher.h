@@ -67,7 +67,7 @@ public:
 
     int SearchByNN(KeyFrame *pKF, Frame &F, std::vector<MapPoint*> &vpMapPointMatches);
     int SearchByNN(Frame &CurrentFrame, const Frame &LastFrame);
-    int SearchByNN(Frame &F, const vector<MapPoint*> &vpMapPoints);
+    int SearchByNN(Frame &F, const std::vector<MapPoint*> &vpMapPoints);
 
 
     // Matching for the Map Initialization (only used in the monocular case)

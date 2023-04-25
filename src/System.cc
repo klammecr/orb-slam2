@@ -74,7 +74,7 @@ System::System(const std::string &strVocFile, const std::string &strSettingsFile
     //    exit(-1);
     //}
     //std::cout << "Vocabulary loaded!" << std::endl << std::endl;
-    mpVocabulary->loadFromBinaryFile(strVocFile);
+    mpVocabulary->load(strVocFile);
 
     //Create KeyFrame Database
     mpKeyFrameDatabase = new KeyFrameDatabase(*mpVocabulary);
