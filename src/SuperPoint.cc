@@ -103,107 +103,27 @@ void NMS(cv::Mat det, cv::Mat conf, cv::Mat desc, std::vector<cv::KeyPoint>& pts
 void NMS2(std::vector<cv::KeyPoint> det, cv::Mat conf, std::vector<cv::KeyPoint>& pts,
             int border, int dist_thresh, int img_width, int img_height);
 
-cv::Mat SPdetect(std::shared_ptr<SuperPoint> model, cv::Mat img, std::vector<cv::KeyPoint> &keypoints, double threshold, bool nms, bool cuda)
+SPDetector::SPDetector(std::shared_ptr<SuperPoint> _model, bool cuda) : model(_model) 
 {
-    auto x = torch::from_blob(img.clone().data, {1, 1, img.rows, img.cols}, torch::kByte);
-    x = x.to(torch::kFloat) / 255;
-
     bool use_cuda = cuda && torch::cuda::is_available();
+    std::cout << "Using CUDA?: " << use_cuda << std::endl;
     torch::DeviceType device_type;
     if (use_cuda)
         device_type = torch::kCUDA;
     else
         device_type = torch::kCPU;
-    torch::Device device(device_type);
-
-    model->to(device);
-    x = x.set_requires_grad(false);
-    auto out = model->forward(x.to(device));
-    auto prob = out[0].squeeze(0);  // [H, W]
-    auto desc = out[1];             // [1, 256, H/8, W/8]
-
-    auto kpts = (prob > threshold);
-
-    kpts = torch::nonzero(kpts);  // [n_keypoints, 2]  (y, x)
-    auto fkpts = kpts.to(torch::kFloat);
-    auto grid = torch::zeros({1, 1, kpts.size(0), 2}).to(device);  // [1, 1, n_keypoints, 2]
-    grid[0][0].slice(1, 0, 1) = 2.0 * fkpts.slice(1, 1, 2) / prob.size(1) - 1;  // x
-    grid[0][0].slice(1, 1, 2) = 2.0 * fkpts.slice(1, 0, 1) / prob.size(0) - 1;  // y
-
-    desc = torch::grid_sampler(desc, grid, 0, 0, true);  // [1, 256, 1, n_keypoints]
-    desc = desc.squeeze(0).squeeze(1);  // [256, n_keypoints]
-
-    // normalize to 1
-    auto dn = torch::norm(desc, 2, 1);
-    desc = desc.div(torch::unsqueeze(dn, 1));
-
-    desc = desc.transpose(0, 1).contiguous();  // [n_keypoints, 256]
-
-    if (use_cuda)
-        desc = desc.to(torch::kCPU);
-
-    cv::Mat descriptors_no_nms(cv::Size(desc.size(1), desc.size(0)), CV_32FC1, desc.data<float>());
-    
-    std::vector<cv::KeyPoint> keypoints_no_nms;
-    for (int i = 0; i < kpts.size(0); i++) {
-        float response = prob[kpts[i][0]][kpts[i][1]].item<float>();
-        keypoints_no_nms.push_back(cv::KeyPoint(kpts[i][1].item<float>(), kpts[i][0].item<float>(), 8, -1, response));
-    }
-
-    if (nms) {
-        cv::Mat kpt_mat(keypoints_no_nms.size(), 2, CV_32F);
-        cv::Mat conf(keypoints_no_nms.size(), 1, CV_32F);
-        for (size_t i = 0; i < keypoints_no_nms.size(); i++) {
-            int x = keypoints_no_nms[i].pt.x;
-            int y = keypoints_no_nms[i].pt.y;
-            kpt_mat.at<float>(i, 0) = (float)keypoints_no_nms[i].pt.x;
-            kpt_mat.at<float>(i, 1) = (float)keypoints_no_nms[i].pt.y;
-
-            conf.at<float>(i, 0) = prob[y][x].item<float>();
-        }
-
-        cv::Mat descriptors;
-
-        int border = 8;
-        int dist_thresh = 4;
-        int height = img.rows;
-        int width = img.cols;
-
-
-        NMS(kpt_mat, conf, descriptors_no_nms, keypoints, descriptors, border, dist_thresh, width, height);
-
-        return descriptors;
-    }
-    else {
-        keypoints = keypoints_no_nms;
-        return descriptors_no_nms.clone();
-    }
-
-    // return descriptors.clone();
+    m_device = device_type;
+    model->to(m_device);
 }
 
-
-SPDetector::SPDetector(std::shared_ptr<SuperPoint> _model) : model(_model) 
-{
-}
-
-void SPDetector::detect(cv::Mat &img, bool cuda)
+void SPDetector::detect(cv::Mat &img)
 {
     auto x = torch::from_blob(img.clone().data, {1, 1, img.rows, img.cols}, torch::kByte);
     x = x.to(torch::kFloat) / 255;
 
-    bool use_cuda = cuda && torch::cuda::is_available();
-    std::cout >> "Using CUDA?: " >> use_cuda >> std::endl;
-    torch::DeviceType device_type;
-    if (use_cuda)
-        device_type = torch::kCUDA;
-    else
-        device_type = torch::kCPU;
-    torch::Device device(device_type);
-
-    model->to(device);
+    model->to(m_device);
     x = x.set_requires_grad(false);
-    auto out = model->forward(x.to(device));
+    auto out = model->forward(x.to(m_device));
 
     mProb = out[0].squeeze(0);  // [H, W]
     mDesc = out[1];             // [1, 256, H/8, W/8]
@@ -255,9 +175,9 @@ void SPDetector::computeDescriptors(const std::vector<cv::KeyPoint> &keypoints, 
         kpt_mat.at<float>(i, 1) = (float)keypoints[i].pt.x;
     }
 
-    auto fkpts = torch::from_blob(kpt_mat.data, {keypoints.size(), 2}, torch::kFloat);
+    auto fkpts = torch::from_blob(kpt_mat.data, {keypoints.size(), 2}, torch::kFloat).to(m_device);
 
-    auto grid = torch::zeros({1, 1, fkpts.size(0), 2});  // [1, 1, n_keypoints, 2]
+    auto grid = torch::zeros({1, 1, fkpts.size(0), 2}).to(m_device);  // [1, 1, n_keypoints, 2]
     grid[0][0].slice(1, 0, 1) = 2.0 * fkpts.slice(1, 1, 2) / mProb.size(1) - 1;  // x
     grid[0][0].slice(1, 1, 2) = 2.0 * fkpts.slice(1, 0, 1) / mProb.size(0) - 1;  // y
 

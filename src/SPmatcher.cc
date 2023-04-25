@@ -122,7 +122,7 @@ int SPmatcher::SearchByProjection(Frame &F, const std::vector<MapPoint*> &vpMapP
             nmatches++;
         }
     }
-
+    std::cout << "Number of Matches" << std::endl;
     return nmatches;
 }
 

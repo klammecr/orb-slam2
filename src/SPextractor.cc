@@ -414,8 +414,8 @@ void SPextractor::ComputeKeyPointsOctTree(std::vector<std::vector<cv::KeyPoint> 
 
     for (int level = 0; level < nlevels; ++level)
     {
-        SPDetector detector(model);
-        detector.detect(mvImagePyramid[level], true);
+        SPDetector detector(model, true);
+        detector.detect(mvImagePyramid[level]);
 
         const int minBorderX = EDGE_THRESHOLD-3;
         const int minBorderY = minBorderX;

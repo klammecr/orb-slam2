@@ -16,6 +16,7 @@
 #if _WIN32
 #include <cstdint>
 #endif
+#include <iostream>
 namespace DBoW3 {
 
 /// Id of words
