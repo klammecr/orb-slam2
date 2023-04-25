@@ -603,6 +603,7 @@ void Tracking::MonocularInitialization()
         // Check if there are enough correspondences
         if(nmatches<100)
         {
+            std::cout << "Not Enough Correspondences!" << std::endl;
             delete mpInitializer;
             mpInitializer = static_cast<Initializer*>(NULL);
             return;
@@ -624,7 +625,7 @@ void Tracking::MonocularInitialization()
             }
 
             std::cout << "Numver of Matches After" << std::endl;
-            
+
             // Set Frame Poses
             mInitialFrame.SetPose(cv::Mat::eye(4,4,CV_32F));
             cv::Mat Tcw = cv::Mat::eye(4,4,CV_32F);
@@ -633,6 +634,10 @@ void Tracking::MonocularInitialization()
             mCurrentFrame.SetPose(Tcw);
 
             CreateInitialMapMonocular();
+        }
+        else
+        {
+            std::cout << "Could not Initialize :(" <<std::endl;
         }
     }
 }
