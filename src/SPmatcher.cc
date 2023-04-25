@@ -605,12 +605,12 @@ int SPmatcher::SearchForInitialization(Frame &F1, Frame &F2, std::vector<cv::Poi
                 vMatchedDistance[bestIdx2]=bestDist;
                 nmatches++;
 
-                if(false)
+                if(mbCheckOrientation)
                 {
                     float rot = F1.mvKeysUn[i1].angle-F2.mvKeysUn[bestIdx2].angle;
                     if(rot<0.0)
                         rot+=360.0f;
-                    int bin = round(rot*factor);
+                    int bin = round(rot/(360.0f*factor));
                     if(bin==HISTO_LENGTH)
                         bin=0;
                     assert(bin>=0 && bin<HISTO_LENGTH);
@@ -621,7 +621,7 @@ int SPmatcher::SearchForInitialization(Frame &F1, Frame &F2, std::vector<cv::Poi
 
     }
 
-    if(false)
+    if(mbCheckOrientation)
     {
         int ind1=-1;
         int ind2=-1;
@@ -737,7 +737,7 @@ int SPmatcher::SearchByBoW(KeyFrame *pKF1, KeyFrame *pKF2, std::vector<MapPoint 
                         vpMatches12[idx1]=vpMapPoints2[bestIdx2];
                         vbMatched2[bestIdx2]=true;
 
-                        if(false)
+                        if(mbCheckOrientation)
                         {
                             float rot = vKeysUn1[idx1].angle-vKeysUn2[bestIdx2].angle;
                             if(rot<0.0)
@@ -1562,7 +1562,7 @@ int SPmatcher::SearchByProjection(Frame &CurrentFrame, const Frame &LastFrame, c
                     CurrentFrame.mvpMapPoints[bestIdx2]=pMP;
                     nmatches++;
 
-                    if(false)
+                    if(mbCheckOrientation)
                     {
                         float rot = LastFrame.mvKeysUn[i].angle-CurrentFrame.mvKeysUn[bestIdx2].angle;
                         if(rot<0.0)
@@ -1579,7 +1579,7 @@ int SPmatcher::SearchByProjection(Frame &CurrentFrame, const Frame &LastFrame, c
     }
 
     //Apply rotation consistency
-    if(false)
+    if(mbCheckOrientation)
     {
         int ind1=-1;
         int ind2=-1;
