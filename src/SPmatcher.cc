@@ -137,9 +137,9 @@ float SPmatcher::RadiusByViewingCos(const float &viewCos)
 
 int SPmatcher::SearchByNN(Frame &F, const std::vector<MapPoint*> &vpMapPoints)
 {
-    // std::cout << "Matching Localmap" << std::endl;
-    // std::cout << vpMapPoints.size() << std::endl;
-    // std::cout << F.mDescriptors.rows << std::endl;
+    std::cout << "Matching Localmap" << std::endl;
+    std::cout << vpMapPoints.size() << std::endl;
+    std::cout << F.mDescriptors.rows << std::endl;
 
     std::vector<cv::Mat> MPdescriptorAll;
     std::vector<int> select_indice;

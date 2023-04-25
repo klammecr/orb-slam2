@@ -415,12 +415,12 @@ void SPextractor::ComputeKeyPointsOctTree(std::vector<std::vector<cv::KeyPoint> 
 
     for (int level = 0; level < nlevels; ++level)
     {
-        auto start = std::chrono::high_resolution_clock::now();
+        // auto start = std::chrono::high_resolution_clock::now();
         SPDetector detector(model, false);
         detector.detect(mvImagePyramid[level]);
-        auto stop = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-        std::cout << duration.count() << std::endl;
+        // auto stop = std::chrono::high_resolution_clock::now();
+        // auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+        // std::cout << duration.count() << std::endl;
 
         const int minBorderX = EDGE_THRESHOLD-3;
         const int minBorderY = minBorderX;
