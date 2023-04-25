@@ -65,6 +65,11 @@ public:
     int SearchByBoW(KeyFrame *pKF, Frame &F, std::vector<MapPoint*> &vpMapPointMatches);
     int SearchByBoW(KeyFrame *pKF1, KeyFrame* pKF2, std::vector<MapPoint*> &vpMatches12);
 
+    int SearchByNN(KeyFrame *pKF, Frame &F, std::vector<MapPoint*> &vpMapPointMatches);
+    int SearchByNN(Frame &CurrentFrame, const Frame &LastFrame);
+    int SearchByNN(Frame &F, const vector<MapPoint*> &vpMapPoints);
+
+
     // Matching for the Map Initialization (only used in the monocular case)
     int SearchForInitialization(Frame &F1, Frame &F2, std::vector<cv::Point2f> &vbPrevMatched, std::vector<int> &vnMatches12, int windowSize=10);
 
