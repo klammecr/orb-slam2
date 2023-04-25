@@ -135,6 +135,142 @@ float SPmatcher::RadiusByViewingCos(const float &viewCos)
 }
 
 
+int SPmatcher::SearchByNN(Frame &F, const vector<MapPoint*> &vpMapPoints)
+{
+    // std::cout << "Matching Localmap" << std::endl;
+    // std::cout << vpMapPoints.size() << std::endl;
+    // std::cout << F.mDescriptors.rows << std::endl;
+
+    std::vector<cv::Mat> MPdescriptorAll;
+    std::vector<int> select_indice;
+    for(size_t iMP=0; iMP<vpMapPoints.size(); iMP++)
+    {
+        MapPoint* pMP = vpMapPoints[iMP];
+
+        if(!pMP)
+            continue;
+
+        if(!pMP->mbTrackInView)
+            continue;
+
+        if(pMP->isBad())
+            continue;
+
+        const cv::Mat MPdescriptor = pMP->GetDescriptor();
+        MPdescriptorAll.push_back(MPdescriptor);
+        select_indice.push_back(iMP);
+    }
+
+    cv::Mat MPdescriptors;
+    MPdescriptors.create(MPdescriptorAll.size(), 32, CV_8U);
+
+    for (int i=0; i<static_cast<int>(MPdescriptorAll.size()); i++)
+    {
+        for (int j=0; j<32; j++)
+        {
+            MPdescriptors.at<unsigned char>(i, j) = MPdescriptorAll[i].at<unsigned char>(j);
+        }
+    }
+
+    std::vector<cv::DMatch> matches;
+    cv::BFMatcher desc_matcher(cv::NORM_HAMMING, true);
+    desc_matcher.match(MPdescriptors, F.mDescriptors, matches, cv::Mat());
+
+    int nmatches =0;
+    for (int i = 0; i < static_cast<int>(matches.size()); ++i) {
+        int realIdxMap = select_indice[matches[i].queryIdx];
+        int bestIdxF  = matches[i].trainIdx;
+        
+        if(matches[i].distance > TH_HIGH)
+            continue;
+
+        if(F.mvpMapPoints[bestIdxF])
+            if(F.mvpMapPoints[bestIdxF]->Observations()>0)
+                continue;
+
+        MapPoint* pMP = vpMapPoints[realIdxMap];
+        F.mvpMapPoints[bestIdxF] = pMP;
+        nmatches++;
+    }
+
+    // std::cout << MPdescriptors.rows << std::endl;
+    // std::cout << nmatches << std::endl;
+
+    return nmatches;
+}
+
+
+int SPmatcher::SearchByNN(KeyFrame *pKF, Frame &F, std::vector<MapPoint*> &vpMapPointMatches)
+{
+
+    // std::cout << "Matching KeyFrame" << std::endl;
+    // std::cout << pKF->mDescriptors.rows << std::endl;
+    // std::cout << F.mDescriptors.rows << std::endl;
+
+    const vector<MapPoint*> vpMapPointsKF = pKF->GetMapPointMatches();
+    vpMapPointMatches = vector<MapPoint*>(F.N,static_cast<MapPoint*>(NULL));
+
+    std::vector<cv::DMatch> matches;
+    cv::BFMatcher desc_matcher(cv::NORM_HAMMING, true);
+    desc_matcher.match(pKF->mDescriptors, F.mDescriptors, matches, cv::Mat());
+
+    int nmatches =0;
+    for (int i = 0; i < static_cast<int>(matches.size()); ++i) {
+        int realIdxKF = matches[i].queryIdx;
+        int bestIdxF  = matches[i].trainIdx;
+
+        if(matches[i].distance > TH_HIGH)
+            continue;
+
+        MapPoint* pMP = vpMapPointsKF[realIdxKF];
+
+        if(!pMP)
+            continue;
+
+        if(pMP->isBad())
+            continue;  
+        
+        vpMapPointMatches[bestIdxF]=pMP;
+        nmatches++;
+    }
+    // std::cout << nmatches << std::endl;
+
+    return nmatches;
+
+}
+
+
+int SPmatcher::SearchByNN(Frame &CurrentFrame, const Frame &LastFrame)
+{
+
+    std::vector<cv::DMatch> matches;
+    cv::BFMatcher desc_matcher(cv::NORM_HAMMING, true);
+    desc_matcher.match(LastFrame.mDescriptors, CurrentFrame.mDescriptors, matches, cv::Mat());
+
+    int nmatches =0;
+    for (int i = 0; i < static_cast<int>(matches.size()); ++i) {
+        int realIdxKF = matches[i].queryIdx;
+        int bestIdxF  = matches[i].trainIdx;
+
+        if(matches[i].distance > TH_LOW)
+            continue;
+
+        MapPoint* pMP = LastFrame.mvpMapPoints[realIdxKF];
+        if(!pMP)
+            continue;
+
+        if(pMP->isBad())
+            continue;
+
+        if(!LastFrame.mvbOutlier[realIdxKF])
+        
+        CurrentFrame.mvpMapPoints[bestIdxF]=pMP;
+        nmatches++;
+    }
+
+    return nmatches;
+
+}
 bool SPmatcher::CheckDistEpipolarLine(const cv::KeyPoint &kp1,const cv::KeyPoint &kp2,const cv::Mat &F12,const KeyFrame* pKF2)
 {
     // Epipolar line in second image l = x1'F12 = [a b c]
@@ -262,7 +398,7 @@ int SPmatcher::SearchByBoW(KeyFrame* pKF,Frame &F, std::vector<MapPoint*> &vpMap
     }
 
 
-    if(false)
+    if(mbCheckOrientation)
     {
         int ind1=-1;
         int ind2=-1;
@@ -630,7 +766,7 @@ int SPmatcher::SearchByBoW(KeyFrame *pKF1, KeyFrame *pKF2, std::vector<MapPoint 
         }
     }
 
-    if(false)
+    if(mbCheckOrientation)
     {
         int ind1=-1;
         int ind2=-1;
@@ -760,7 +896,7 @@ int SPmatcher::SearchForTriangulation(KeyFrame *pKF1, KeyFrame *pKF2, cv::Mat F1
                     vMatches12[idx1]=bestIdx2;
                     nmatches++;
 
-                    if(false)
+                    if(mbCheckOrientation)
                     {
                         float rot = kp1.angle-kp2.angle;
                         if(rot<0.0)
@@ -787,7 +923,7 @@ int SPmatcher::SearchForTriangulation(KeyFrame *pKF1, KeyFrame *pKF2, cv::Mat F1
         }
     }
 
-    if(false)
+    if(mbCheckOrientation)
     {
         int ind1=-1;
         int ind2=-1;
@@ -1556,7 +1692,7 @@ int SPmatcher::SearchByProjection(Frame &CurrentFrame, KeyFrame *pKF, const std:
                     CurrentFrame.mvpMapPoints[bestIdx2]=pMP;
                     nmatches++;
 
-                    if(false)
+                    if(mbCheckOrientation)
                     {
                         float rot = pKF->mvKeysUn[i].angle-CurrentFrame.mvKeysUn[bestIdx2].angle;
                         if(rot<0.0)
@@ -1573,7 +1709,7 @@ int SPmatcher::SearchByProjection(Frame &CurrentFrame, KeyFrame *pKF, const std:
         }
     }
 
-    if(false)
+    if(mbCheckOrientation)
     {
         int ind1=-1;
         int ind2=-1;

@@ -66,7 +66,7 @@ System::System(const std::string &strVocFile, const std::string &strSettingsFile
     std::cout << std::endl << "Loading ORB Vocabulary. This could take a while..." << std::endl;
 
     mpVocabulary = new ORBVocabulary();
-    #//bool bVocLoad = mpVocabulary->loadFromTextFile(strVocFile);
+    // bool bVocLoad = mpVocabulary->loadFromTextFile(strVocFile);
     //if(!bVocLoad)
     //{
     //    std::cerr << "Wrong path to vocabulary. " << std::endl;
@@ -74,7 +74,7 @@ System::System(const std::string &strVocFile, const std::string &strSettingsFile
     //    exit(-1);
     //}
     //std::cout << "Vocabulary loaded!" << std::endl << std::endl;
-    mpVocabulary->load(strVocFile);
+    mpVocabulary->loadFromBinaryFile(strVocFile);
 
     //Create KeyFrame Database
     mpKeyFrameDatabase = new KeyFrameDatabase(*mpVocabulary);
