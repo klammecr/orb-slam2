@@ -650,7 +650,7 @@ int SPmatcher::SearchForInitialization(Frame &F1, Frame &F2, std::vector<cv::Poi
     for(size_t i1=0, iend1=vnMatches12.size(); i1<iend1; i1++)
         if(vnMatches12[i1]>=0)
             vbPrevMatched[i1]=F2.mvKeysUn[vnMatches12[i1]].pt;
-
+    std::cout << nmatches << std::endl;
     return nmatches;
 }
 
@@ -888,8 +888,7 @@ int SPmatcher::SearchForTriangulation(KeyFrame *pKF1, KeyFrame *pKF2, cv::Mat F1
                         bestIdx2 = idx2;
                         bestDist = dist;
                     }
-                }
-                
+                }                
                 if(bestIdx2>=0)
                 {
                     const cv::KeyPoint &kp2 = pKF2->mvKeysUn[bestIdx2];
@@ -901,7 +900,7 @@ int SPmatcher::SearchForTriangulation(KeyFrame *pKF1, KeyFrame *pKF2, cv::Mat F1
                         float rot = kp1.angle-kp2.angle;
                         if(rot<0.0)
                             rot+=360.0f;
-                        int bin = round(rot*factor);
+                        int bin = round(rot/(360.0f*factor));
                         if(bin==HISTO_LENGTH)
                             bin=0;
                         assert(bin>=0 && bin<HISTO_LENGTH);
