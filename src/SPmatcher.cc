@@ -135,7 +135,7 @@ float SPmatcher::RadiusByViewingCos(const float &viewCos)
 }
 
 
-int SPmatcher::SearchByNN(Frame &F, const vector<MapPoint*> &vpMapPoints)
+int SPmatcher::SearchByNN(Frame &F, const std::vector<MapPoint*> &vpMapPoints)
 {
     // std::cout << "Matching Localmap" << std::endl;
     // std::cout << vpMapPoints.size() << std::endl;
@@ -207,8 +207,8 @@ int SPmatcher::SearchByNN(KeyFrame *pKF, Frame &F, std::vector<MapPoint*> &vpMap
     // std::cout << pKF->mDescriptors.rows << std::endl;
     // std::cout << F.mDescriptors.rows << std::endl;
 
-    const vector<MapPoint*> vpMapPointsKF = pKF->GetMapPointMatches();
-    vpMapPointMatches = vector<MapPoint*>(F.N,static_cast<MapPoint*>(NULL));
+    const std::vector<MapPoint*> vpMapPointsKF = pKF->GetMapPointMatches();
+    vpMapPointMatches = std::vector<MapPoint*>(F.N,static_cast<MapPoint*>(NULL));
 
     std::vector<cv::DMatch> matches;
     cv::BFMatcher desc_matcher(cv::NORM_HAMMING, true);
