@@ -640,6 +640,8 @@ void Tracking::MonocularInitialization()
 
 void Tracking::CreateInitialMapMonocular()
 {
+    std::cout << "Setting Monocular Map" << std::endl;
+
     // Create KeyFrames
     KeyFrame* pKFini = new KeyFrame(mInitialFrame,mpMap,mpKeyFrameDB);
     KeyFrame* pKFcur = new KeyFrame(mCurrentFrame,mpMap,mpKeyFrameDB);
@@ -647,6 +649,8 @@ void Tracking::CreateInitialMapMonocular()
 
     pKFini->ComputeBoW();
     pKFcur->ComputeBoW();
+
+    std::cout << Computed BoW << std::endl;
 
     // Insert KFs in the map
     mpMap->AddKeyFrame(pKFini);
