@@ -603,7 +603,6 @@ void Tracking::MonocularInitialization()
         // Check if there are enough correspondences
         if(nmatches<100)
         {
-            std::cout << "Not Enough Correspondences!" << std::endl;
             delete mpInitializer;
             mpInitializer = static_cast<Initializer*>(NULL);
             return;
@@ -613,6 +612,7 @@ void Tracking::MonocularInitialization()
         cv::Mat tcw; // Current Camera Translation
         std::vector<bool> vbTriangulated; // Triangulated Correspondences (mvIniMatches)
 
+		
         if(mpInitializer->Initialize(mCurrentFrame, mvIniMatches, Rcw, tcw, mvIniP3D, vbTriangulated))
         {
             for(size_t i=0, iend=mvIniMatches.size(); i<iend;i++)
@@ -624,8 +624,8 @@ void Tracking::MonocularInitialization()
                 }
             }
 
-            std::cout << "Number of Matches After" << nmatches << std::endl;
-
+            std::cout << "Numver of Matches After" << std::endl;
+            
             // Set Frame Poses
             mInitialFrame.SetPose(cv::Mat::eye(4,4,CV_32F));
             cv::Mat Tcw = cv::Mat::eye(4,4,CV_32F);
@@ -634,10 +634,6 @@ void Tracking::MonocularInitialization()
             mCurrentFrame.SetPose(Tcw);
 
             CreateInitialMapMonocular();
-        }
-        else
-        {
-            std::cout << "Could not Initialize :(" <<std::endl;
         }
     }
 }
