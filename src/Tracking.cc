@@ -297,6 +297,7 @@ void Tracking::Track()
         // Initial camera pose estimation using motion model or relocalization (if tracking is lost)
         if(!mbOnlyTracking)
         {
+
             // Local Mapping is activated. This is the normal behaviour, unless
             // you explicitly activate the "only tracking" mode.
 
@@ -304,17 +305,27 @@ void Tracking::Track()
             {
                 // Local Mapping might have changed some MapPoints tracked in last frame
                 CheckReplacedInLastFrame();
+                
+                // NN only keyframe tracking
+                bOK = TrackReferenceKeyFrame();
 
-                if(mVelocity.empty() || mCurrentFrame.mnId<mnLastRelocFrameId+2)
+                // Set NN_ONLY for neglecting other tracking heuristics of original ORB_SLAM2, used for farily compare with ORB feature
+                if (getenv("NN_ONLY") == nullptr)
                 {
-                    bOK = TrackReferenceKeyFrame();
-                }
-                else
-                {
-                    bOK = TrackWithMotionModel();
-                    if(!bOK)
+                    if(mVelocity.empty() || mCurrentFrame.mnId<mnLastRelocFrameId+2)
+                    {
                         bOK = TrackReferenceKeyFrame();
+                    }
+                    else
+                    {
+                        bOK = TrackWithMotionModel();
+                        if(!bOK)
+                        {
+                            bOK = TrackReferenceKeyFrame();
+                        }
+                    }
                 }
+
             }
             else
             {
@@ -399,7 +410,15 @@ void Tracking::Track()
         if(!mbOnlyTracking)
         {
             if(bOK)
+            {
                 bOK = TrackLocalMap();
+            }
+
+            else
+            {   
+                mCurrentFrame.SetPose(mLastPose);
+                bOK = TrackLocalMap();
+            }
         }
         else
         {
@@ -467,6 +486,8 @@ void Tracking::Track()
                 if(mCurrentFrame.mvpMapPoints[i] && mCurrentFrame.mvbOutlier[i])
                     mCurrentFrame.mvpMapPoints[i]=static_cast<MapPoint*>(NULL);
             }
+
+            mLastPose = mCurrentFrame.mTcw.clone();
         }
 
         // Reset if the camera get lost soon after initialization
@@ -478,6 +499,9 @@ void Tracking::Track()
                 mpSystem->Reset();
                 return;
             }
+            // Uncomment this if reseting is needed on the fly
+            // cout << "Track lost, reseting..." << endl;
+            // mpSystem->Reset();
         }
 
         if(!mCurrentFrame.mpReferenceKF)
@@ -509,10 +533,26 @@ void Tracking::Track()
 
 void Tracking::StereoInitialization()
 {
-    if(mCurrentFrame.N>500)
+    if(mCurrentFrame.N>50)
     {
         // Set Frame pose to the origin
-        mCurrentFrame.SetPose(cv::Mat::eye(4,4,CV_32F));
+        mCurrentFrame.SetPose(mLastPose);
+
+        int nGood = 0;
+        for(int i = 0; i < mCurrentFrame.N; i++)
+        {
+            float z = mCurrentFrame.mvDepth[i];
+            if (z > 0)
+            {
+                nGood++;
+            }
+        }
+
+        if (nGood < 50)
+        {
+            cout << "Cannot create new map with only " << nGood << " points" << endl;
+            return;
+        }
 
         // Create KeyFrame
         KeyFrame* pKFini = new KeyFrame(mCurrentFrame,mpMap,mpKeyFrameDB);
@@ -772,7 +812,8 @@ bool Tracking::TrackReferenceKeyFrame()
     ORBmatcher matcher(0.7,true);
     std::vector<MapPoint*> vpMapPointMatches;
 
-    //int nmatches = matcher.SearchByBoW(mpReferenceKF,mCurrentFrame,vpMapPointMatches);
+    // NN only matching
+    // nmatches = matcher.SearchByBoW(mpReferenceKF,mCurrentFrame,vpMapPointMatches);
     int nmatches = matcher.SearchByNN(mpReferenceKF,mCurrentFrame,vpMapPointMatches);
 
     if(nmatches<15)
@@ -900,6 +941,8 @@ bool Tracking::TrackWithMotionModel()
         fill(mCurrentFrame.mvpMapPoints.begin(),mCurrentFrame.mvpMapPoints.end(),static_cast<MapPoint*>(NULL));
         nmatches = matcher.SearchByProjection(mCurrentFrame,mLastFrame,2*th,mSensor==System::MONOCULAR);
     }
+
+    // int nmatches = matcher.SearchByNN(mCurrentFrame,mLastFrame);
 
     if(nmatches<20)
         return false;
