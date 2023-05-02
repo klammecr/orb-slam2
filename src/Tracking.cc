@@ -650,7 +650,7 @@ void Tracking::CreateInitialMapMonocular()
     pKFini->ComputeBoW();
     pKFcur->ComputeBoW();
 
-    std::cout << Computed BoW << std::endl;
+    std::cout << "Computed BoW" << std::endl;
 
     // Insert KFs in the map
     mpMap->AddKeyFrame(pKFini);
@@ -693,6 +693,8 @@ void Tracking::CreateInitialMapMonocular()
 
     Optimizer::GlobalBundleAdjustemnt(mpMap,20);
 
+    std::cout << "Bundle Adjustment Done" << std::endl;
+
     // Set median depth to 1
     float medianDepth = pKFini->ComputeSceneMedianDepth(2);
     float invMedianDepth = 1.0f/medianDepth;
@@ -709,6 +711,8 @@ void Tracking::CreateInitialMapMonocular()
     Tc2w.col(3).rowRange(0,3) = Tc2w.col(3).rowRange(0,3)*invMedianDepth;
     pKFcur->SetPose(Tc2w);
 
+    std::cout << "Scale Init Done" << std::endl;
+
     // Scale points
     std::vector<MapPoint*> vpAllMapPoints = pKFini->GetMapPointMatches();
     for(size_t iMP=0; iMP<vpAllMapPoints.size(); iMP++)
@@ -722,6 +726,7 @@ void Tracking::CreateInitialMapMonocular()
 
     mpLocalMapper->InsertKeyFrame(pKFini);
     mpLocalMapper->InsertKeyFrame(pKFcur);
+    std::cout << "Key Frame Inserted" << std::endl;
 
     mCurrentFrame.SetPose(pKFcur->GetPose());
     mnLastKeyFrameId=mCurrentFrame.mnId;
@@ -732,10 +737,12 @@ void Tracking::CreateInitialMapMonocular()
     mvpLocalMapPoints=mpMap->GetAllMapPoints();
     mpReferenceKF = pKFcur;
     mCurrentFrame.mpReferenceKF = pKFcur;
+    std::cout << "Ref Set" << std::endl;
 
     mLastFrame = Frame(mCurrentFrame);
 
     mpMap->SetReferenceMapPoints(mvpLocalMapPoints);
+    std::cout << "Reference Point Set" << std::endl;
 
     mpMapDrawer->SetCurrentCameraPose(pKFcur->GetPose());
 

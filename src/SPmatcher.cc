@@ -1776,10 +1776,10 @@ void SPmatcher::ComputeThreeMaxima(std::vector<int>* histo, const int L, int &in
 }
 
 
-// // Bit set count operation from
-// // http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel
-// int SPmatcher::DescriptorDistance(const cv::Mat &a, const cv::Mat &b)
-// {
+// Bit set count operation from
+// http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel
+//float SPmatcher::DescriptorDistance(const cv::Mat &a, const cv::Mat &b)
+//{
 //     const int *pa = a.ptr<int32_t>();
 //     const int *pb = b.ptr<int32_t>();
 
@@ -1794,12 +1794,11 @@ void SPmatcher::ComputeThreeMaxima(std::vector<int>* histo, const int L, int &in
 //     }
 
 //     return dist;
-// }
+//}
 
 float SPmatcher::DescriptorDistance(const cv::Mat &a, const cv::Mat &b)
 {
     float dist = (float)cv::norm(a, b, cv::NORM_L2);
-
     return dist;
 }
 
