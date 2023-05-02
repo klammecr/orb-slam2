@@ -27,7 +27,7 @@
 
 #include "Thirdparty/DBoW3/src/FeatureVector.h"
 
-#include<stdint-gcc.h>
+#include<stdint.h>
 
 namespace ORB_SLAM2
 {

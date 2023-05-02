@@ -822,8 +822,8 @@ bool Tracking::TrackReferenceKeyFrame()
     std::vector<MapPoint*> vpMapPointMatches;
 
     // NN only matching
-    // nmatches = matcher.SearchByBoW(mpReferenceKF,mCurrentFrame,vpMapPointMatches);
-    int nmatches = matcher.SearchByNN(mpReferenceKF,mCurrentFrame,vpMapPointMatches);
+    int nmatches = matcher.SearchByBoW(mpReferenceKF,mCurrentFrame,vpMapPointMatches);
+    //int nmatches = matcher.SearchByNN(mpReferenceKF,mCurrentFrame,vpMapPointMatches);
 
     if(nmatches<15)
         return false;
@@ -1244,15 +1244,15 @@ void Tracking::SearchLocalPoints()
     if(nToMatch>0)
     {
         ORBmatcher matcher(0.8);
-        // int th = 1;
-        // if(mSensor==System::RGBD)
-        //     th=3;
-        // // If the camera has been relocalised recently, perform a coarser search
-        // if(mCurrentFrame.mnId<mnLastRelocFrameId+2)
-        //     th=5;
-        //matcher.SearchByProjection(mCurrentFrame,mvpLocalMapPoints,th);
+        int th = 1;
+         if(mSensor==System::RGBD)
+             th=3;
+         // If the camera has been relocalised recently, perform a coarser search
+         if(mCurrentFrame.mnId<mnLastRelocFrameId+2)
+             th=5;
+        matcher.SearchByProjection(mCurrentFrame,mvpLocalMapPoints,th);
         // NN only matching
-        matcher.SearchByNN(mCurrentFrame,mvpLocalMapPoints);  
+        //matcher.SearchByNN(mCurrentFrame,mvpLocalMapPoints);  
     }
 }
 

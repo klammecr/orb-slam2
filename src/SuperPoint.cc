@@ -175,7 +175,7 @@ void SPDetector::computeDescriptors(const std::vector<cv::KeyPoint> &keypoints, 
         kpt_mat.at<float>(i, 1) = (float)keypoints[i].pt.x;
     }
 
-    auto fkpts = torch::from_blob(kpt_mat.data, {keypoints.size(), 2}, torch::kFloat).to(m_device);
+    auto fkpts = torch::from_blob(kpt_mat.data, {(long)keypoints.size(), 2}, torch::kFloat).to(m_device);
 
     auto grid = torch::zeros({1, 1, fkpts.size(0), 2}).to(m_device);  // [1, 1, n_keypoints, 2]
     grid[0][0].slice(1, 0, 1) = 2.0 * fkpts.slice(1, 1, 2) / mProb.size(1) - 1;  // x
