@@ -664,7 +664,7 @@ void Tracking::MonocularInitialization()
                 }
             }
 
-            std::cout << "Numver of Matches After" << std::endl;
+            std::cout << "Number of Matches After" << nmatches << std::endl;
             
             // Set Frame Poses
             mInitialFrame.SetPose(cv::Mat::eye(4,4,CV_32F));
@@ -693,10 +693,12 @@ void Tracking::CreateInitialMapMonocular()
     std::cout << "Computed BoW" << std::endl;
 
     // Insert KFs in the map
+    std::cout << "Adding Key Frames" <<std::endl;
     mpMap->AddKeyFrame(pKFini);
     mpMap->AddKeyFrame(pKFcur);
 
     // Create MapPoints and asscoiate to keyframes
+    std::cout<< "Creating Map Points" <<std::endl;
     for(size_t i=0; i<mvIniMatches.size();i++)
     {
         if(mvIniMatches[i]<0)
@@ -724,6 +726,7 @@ void Tracking::CreateInitialMapMonocular()
         mpMap->AddMapPoint(pMP);
     }
 
+    std::cout << "Updating Connections" << std::endl;
     // Update Connections
     pKFini->UpdateConnections();
     pKFcur->UpdateConnections();
