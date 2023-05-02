@@ -736,6 +736,8 @@ void Tracking::CreateInitialMapMonocular()
 
     Optimizer::GlobalBundleAdjustemnt(mpMap,20);
 
+
+    std::cout << "Bundle Adjustment Done" << std::endl;
     // Set median depth to 1
     float medianDepth = pKFini->ComputeSceneMedianDepth(2);
     float invMedianDepth = 1.0f/medianDepth;
@@ -762,20 +764,24 @@ void Tracking::CreateInitialMapMonocular()
             pMP->SetWorldPos(pMP->GetWorldPos()*invMedianDepth);
         }
     }
+    std::cout << "SCaling Done" << std::endl;
 
     mpLocalMapper->InsertKeyFrame(pKFini);
     mpLocalMapper->InsertKeyFrame(pKFcur);
+    std::cout << "Inserted Key Frames into Local Map" <<std::endl;
+
 
     mCurrentFrame.SetPose(pKFcur->GetPose());
     mnLastKeyFrameId=mCurrentFrame.mnId;
     mpLastKeyFrame = pKFcur;
+
 
     mvpLocalKeyFrames.push_back(pKFcur);
     mvpLocalKeyFrames.push_back(pKFini);
     mvpLocalMapPoints=mpMap->GetAllMapPoints();
     mpReferenceKF = pKFcur;
     mCurrentFrame.mpReferenceKF = pKFcur;
-
+    
     mLastFrame = Frame(mCurrentFrame);
 
     mpMap->SetReferenceMapPoints(mvpLocalMapPoints);
