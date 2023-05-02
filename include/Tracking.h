@@ -210,6 +210,9 @@ protected:
     //Motion Model
     cv::Mat mVelocity;
 
+    //For restoring tracking
+    cv::Mat mLastPose;
+
     //Color order (true RGB, false BGR, ignored if grayscale)
     bool mbRGB;
 

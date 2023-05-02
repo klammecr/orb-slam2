@@ -550,7 +550,7 @@ void Tracking::StereoInitialization()
 
         if (nGood < 50)
         {
-            cout << "Cannot create new map with only " << nGood << " points" << endl;
+            std::cout << "Cannot create new map with only " << nGood << " points" << std::endl;
             return;
         }
 
@@ -690,7 +690,7 @@ void Tracking::CreateInitialMapMonocular()
     pKFini->ComputeBoW();
     pKFcur->ComputeBoW();
 
-    std::cout << Computed BoW << std::endl;
+    std::cout << "Computed BoW" << std::endl;
 
     // Insert KFs in the map
     mpMap->AddKeyFrame(pKFini);
